@@ -224,8 +224,8 @@ async function updateBalance()
 
     } else if(pool == "wXEQ-USDC")
     {
-        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x71fa26f268c7bc6083f131f39917d01248e66cf6") / 1e18).toLocaleString() + " wXEQ-USDC"
-    }
+        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x71fa26f268c7bc6083f131f39917d01248e66cf6") / 1e18).toLocaleString(undefined,
+            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";    }
 }
 
 async function fetchApprovedCoins(user) {
@@ -417,20 +417,23 @@ async function onWXEQUSDC()
 
     let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
 
-    document.querySelector("#total_staked").innerHTML = (total_wxeq_usdc_deposited / 1e18).toLocaleString() + " wXEQ-USDC";
+    document.querySelector("#total_staked").innerHTML = (total_wxeq_usdc_deposited / 1e18).toLocaleString(undefined,
+        {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";
 
     console.log(uniswap_wxeq_usdc)
   
     document.querySelector("#apy").innerHTML = (((reward * reward_weight) * 6526 * 365) / (uniswap_wxeq_usdc.reserve0 / 1e18) * 100).toLocaleString() + "%";
 
     let user_staked = await fetchStakedAccount(selectedAccount, 2);
-    document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " wXEQ-USDC";
+    document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString(undefined,
+        {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";
 
     document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_usdc_deposited/1e18))).toLocaleString() + " wXEQ";
     document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 2) / 1e18).toLocaleString() + " wXEQ";
     erc20Contract = new web3.eth.Contract(ERC20ABI, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
     document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ-USDC";
-    document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x71fa26f268c7bc6083f131f39917d01248e66cf6") / 1e18).toLocaleString() + " wXEQ-USDC";
+    document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x71fa26f268c7bc6083f131f39917d01248e66cf6") / 1e18).toLocaleString(undefined,
+        {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";
 }
 
 async function onWXEQETH()
@@ -497,7 +500,8 @@ async function onDeposit() {
 
     if (pool_id == 2)
     {
-        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 2) / 1e18).toLocaleString() + " wXEQ-USDC";
+        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 2) / 1e18).toLocaleString(undefined,
+            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";
     }
 
 }
