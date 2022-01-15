@@ -608,14 +608,17 @@ $("#approve").click(async function () {
     if (pool_id == 0)
     {
         document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ";
+        $("#deposit").show();
     } else if (pool_id == 1)
     {
         document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ-ETH";
+        $("#deposit").show();
     }
 
     if (pool_id == 2)
     {
         document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ-USDC";
+        $("#deposit").show();
     }
 })
 
@@ -640,7 +643,7 @@ async function onDepositModal() {
     {
         $("#approve").hide();
     } else {
-        $("#deposit").hide();
+        $("#deposit").show();
     }
 
 }
