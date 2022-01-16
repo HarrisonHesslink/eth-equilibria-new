@@ -52,7 +52,7 @@ async function init() {
   };
 
   web3Modal = new Web3Modal({
-    cacheProvider: true, // optional
+    cacheProvider: false, // optional
     providerOptions, // required
   });
 
