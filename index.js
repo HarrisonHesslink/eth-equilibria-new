@@ -692,8 +692,11 @@ $( "#modal_withdraw_close" ).click(function() {
 
 $( "#swaps" ).click(function() {
     $("#claim_wxeq_swap").hide()
-    $("#user_panel").hide()
-    $("#swap_panel").show()
+    if(selectedAccount != null)
+    {
+        $("#user_panel").show()
+        $("#swap_panel").hide()
+    }
     $("#warning_text").hide()
     document.querySelector("#wXEQStaking").classList.remove('active')
     document.querySelector("#wXEQUSDCStaking").classList.remove('active')
