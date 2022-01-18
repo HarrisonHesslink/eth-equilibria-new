@@ -343,6 +343,9 @@ async function onConnect() {
   document.querySelector("#withdraw").addEventListener("click", onWithdraw);
   document.querySelector("#deposit_modal_button").addEventListener('click', onDepositModal)
 
+
+  $("#swaps").removeAttr("disabled");
+
   $("#user_panel").show()
   interval_pending = setInterval(updatePending, 5000)
   interval_daily = setInterval(updateDailyReward, 5000)
@@ -359,10 +362,13 @@ async function onDisconnect() {
   console.log("Killing the wallet connection", provider);
   $("#prepare").show();
   $("#connected").hide()
-  $("user_panel").hide()
+  $("#user_panel").hide()
+  $("#swap_panel").hide()
+
   clearInterval(interval_balance)
   clearInterval(interval_daily)
   clearInterval(interval_pending)
+  $("#swaps").prop('disabled', true);
 
   // TODO: Which providers have close method?
   if(provider.close) {
@@ -691,11 +697,12 @@ $( "#modal_withdraw_close" ).click(function() {
 
 
 $( "#swaps" ).click(function() {
+    console.log(selectedAccount)
     $("#claim_wxeq_swap").hide()
     if(selectedAccount != null)
     {
-        $("#user_panel").show()
-        $("#swap_panel").hide()
+        $("#user_panel").hide()
+        $("#swap_panel").show()
     }
     $("#warning_text").hide()
     document.querySelector("#wXEQStaking").classList.remove('active')
