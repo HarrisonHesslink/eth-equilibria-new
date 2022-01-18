@@ -43,7 +43,6 @@ async function init() {
   console.log("WalletConnectProvider is", WalletConnectProvider);
   console.log("window.web3 is", window.web3, "window.ethereum is", window.ethereum);
 
-
   // Tell Web3modal what providers we have available.
   // Built-in web browser provider (only one can exist as a time)
   // like MetaMask, Brave or Opera is added automatically by Web3modal
@@ -385,77 +384,88 @@ async function onDisconnect() {
 
 async function onWXEQ()
 {
-    $("#user_panel").show()
-    $("#swap_panel").hide()
-    document.querySelector("#wXEQStaking").classList.add('active')
-    document.querySelector("#wXEQETHStaking").classList.remove('active')
-    document.querySelector("#wXEQUSDCStaking").classList.remove('active')
-    document.querySelector("#swaps").classList.remove('active')
-    document.querySelector("#staking_type").innerHTML = "wXEQ";
+    if(selectedAccount != null)
+    {
+        $("#user_panel").show()
+        $("#swap_panel").hide()
+    }
+        document.querySelector("#wXEQStaking").classList.add('active')
+        document.querySelector("#wXEQETHStaking").classList.remove('active')
+        document.querySelector("#wXEQUSDCStaking").classList.remove('active')
+        document.querySelector("#swaps").classList.remove('active')
+        document.querySelector("#staking_type").innerHTML = "wXEQ";
 
-    let total_wxeq_deposited = await stakingContract.methods.getPoolTotalDeposited(0).call();
+        let total_wxeq_deposited = await stakingContract.methods.getPoolTotalDeposited(0).call();
 
-    let reward_weight = (await stakingContract.methods.getPoolRewardWeight(0).call()) / 100
+        let reward_weight = (await stakingContract.methods.getPoolRewardWeight(0).call()) / 100
 
-    let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
+        let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
 
-    document.querySelector("#total_staked").innerHTML = (total_wxeq_deposited / 1e18).toLocaleString() + " wXEQ";
-    document.querySelector("#apy").innerHTML = (((reward * reward_weight) * 6526 * 365) / (total_wxeq_deposited / 1e18) * 100).toLocaleString() + "%";
+        document.querySelector("#total_staked").innerHTML = (total_wxeq_deposited / 1e18).toLocaleString() + " wXEQ";
+        document.querySelector("#apy").innerHTML = (((reward * reward_weight) * 6526 * 365) / (total_wxeq_deposited / 1e18) * 100).toLocaleString() + "%";
 
-    let user_staked = await fetchStakedAccount(selectedAccount, 0);
-    console.log(total_wxeq_deposited)
-    document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " wXEQ (" + ((user_staked / total_wxeq_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
-    document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_deposited/1e18))).toLocaleString() + " wXEQ";
-    document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 0) / 1e18).toLocaleString() + " wXEQ";
-    erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
-    document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ";
-    document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3") / 1e18).toLocaleString() + " wXEQ";
-
+        let user_staked = await fetchStakedAccount(selectedAccount, 0);
+        console.log(total_wxeq_deposited)
+        document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " wXEQ (" + ((user_staked / total_wxeq_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
+        document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_deposited/1e18))).toLocaleString() + " wXEQ";
+        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 0) / 1e18).toLocaleString() + " wXEQ";
+        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
+        document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ";
+        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3") / 1e18).toLocaleString() + " wXEQ";
     
+   
 
 }
 
 async function onWXEQUSDC()
 {
-    $("#user_panel").show()
-    $("#swap_panel").hide()
-    document.querySelector("#wXEQStaking").classList.remove('active')
-    document.querySelector("#wXEQETHStaking").classList.remove('active')
-    document.querySelector("#wXEQUSDCStaking").classList.add('active')
-    document.querySelector("#swaps").classList.remove('active')
-    document.querySelector("#staking_type").innerHTML = "wXEQ-USDC";
+    if(selectedAccount != null)
+    {
+        $("#user_panel").show()
+        $("#swap_panel").hide()
+    }
+        document.querySelector("#wXEQStaking").classList.remove('active')
+        document.querySelector("#wXEQETHStaking").classList.remove('active')
+        document.querySelector("#wXEQUSDCStaking").classList.add('active')
+        document.querySelector("#swaps").classList.remove('active')
+        document.querySelector("#staking_type").innerHTML = "wXEQ-USDC";
 
-    let uniswap_wxeq_usdc = await uniswapContract2.methods.getReserves().call()
+        let uniswap_wxeq_usdc = await uniswapContract2.methods.getReserves().call()
 
-    let total_wxeq_usdc_deposited = await stakingContract.methods.getPoolTotalDeposited(2).call();
+        let total_wxeq_usdc_deposited = await stakingContract.methods.getPoolTotalDeposited(2).call();
 
-    let reward_weight = (await stakingContract.methods.getPoolRewardWeight(2).call()) / 100
+        let reward_weight = (await stakingContract.methods.getPoolRewardWeight(2).call()) / 100
 
-    let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
+        let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
 
-    document.querySelector("#total_staked").innerHTML = (total_wxeq_usdc_deposited / 1e18).toLocaleString(undefined,
-        {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";
+        document.querySelector("#total_staked").innerHTML = (total_wxeq_usdc_deposited / 1e18).toLocaleString(undefined,
+            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";
 
-    console.log(uniswap_wxeq_usdc)
-  
-    document.querySelector("#apy").innerHTML = (((reward * reward_weight) * 6526 * 365) / (uniswap_wxeq_usdc.reserve0 / 1e18) * 100).toLocaleString() + "%";
+        console.log(uniswap_wxeq_usdc)
+    
+        document.querySelector("#apy").innerHTML = (((reward * reward_weight) * 6526 * 365) / (uniswap_wxeq_usdc.reserve0 / 1e18) * 100).toLocaleString() + "%";
 
-    let user_staked = await fetchStakedAccount(selectedAccount, 2);
-    document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString(undefined,
-        {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC (" + ((user_staked / total_wxeq_usdc_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
+        let user_staked = await fetchStakedAccount(selectedAccount, 2);
+        document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString(undefined,
+            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC (" + ((user_staked / total_wxeq_usdc_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
 
-    document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_usdc_deposited/1e18))).toLocaleString() + " wXEQ";;
-    document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 2) / 1e18).toLocaleString() + " wXEQ";
-    erc20Contract = new web3.eth.Contract(ERC20ABI, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
-    document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ-USDC";
-    document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x71fa26f268c7bc6083f131f39917d01248e66cf6") / 1e18).toLocaleString(undefined,
-        {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC"
+        document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_usdc_deposited/1e18))).toLocaleString() + " wXEQ";;
+        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 2) / 1e18).toLocaleString() + " wXEQ";
+        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
+        document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ-USDC";
+        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x71fa26f268c7bc6083f131f39917d01248e66cf6") / 1e18).toLocaleString(undefined,
+            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC"
+
+    
 }
 
 async function onWXEQETH()
 {
-    $("#user_panel").show()
-    $("#swap_panel").hide()
+    if(selectedAccount != null)
+    {
+        $("#user_panel").show()
+        $("#swap_panel").hide()
+    }
     document.querySelector("#wXEQStaking").classList.remove('active')
     document.querySelector("#wXEQUSDCStaking").classList.remove('active')
     document.querySelector("#wXEQETHStaking").classList.add('active')
