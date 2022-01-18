@@ -26,8 +26,13 @@ let uniswapContract;
 let uniswapContract2;
 var ERC20ABI = [{"inputs":[{"internalType":"address","name":"d","type":"address"},{"internalType":"address","name":"_masterContract","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"owner","type":"address"},{"indexed":true,"internalType":"address","name":"spender","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Approval","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"from","type":"address"},{"indexed":true,"internalType":"address","name":"to","type":"address"},{"indexed":false,"internalType":"uint256","name":"value","type":"uint256"}],"name":"Transfer","type":"event"},{"inputs":[],"name":"_decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"_name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"_symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"checkAccess","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"contractCreator","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"masterContract","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"addy","type":"address"}],"name":"newMaster","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"decimals","outputs":[{"internalType":"uint8","name":"","type":"uint8"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"name","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"symbol","outputs":[{"internalType":"string","name":"","type":"string"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"totalSupply","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"}],"name":"balanceOf","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"_owner","type":"address"},{"internalType":"address","name":"_spender","type":"address"}],"name":"allowance","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transfer","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"approve","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"subtractedValue","type":"uint256"}],"name":"decreaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"_from","type":"address"},{"internalType":"address","name":"to","type":"address"},{"internalType":"uint256","name":"value","type":"uint256"}],"name":"transferFrom","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"spender","type":"address"},{"internalType":"uint256","name":"addedValue","type":"uint256"}],"name":"increaseAllowance","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"_burn","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"_burnFrom","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"mint","outputs":[],"stateMutability":"nonpayable","type":"function"}]
 
+
+var bridgeABI = [{"inputs":[{"internalType":"address","name":"_wxeq","type":"address"}],"stateMutability":"nonpayable","type":"constructor"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"previousOwner","type":"address"},{"indexed":true,"internalType":"address","name":"newOwner","type":"address"}],"name":"OwnershipTransferred","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_to","type":"address"},{"indexed":false,"internalType":"uint256","name":"_value","type":"uint256"}],"name":"admin_transfer","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"address","name":"_to","type":"address"},{"indexed":true,"internalType":"string","name":"_txid","type":"string"},{"indexed":false,"internalType":"uint256","name":"_value","type":"uint256"}],"name":"from_eon","type":"event"},{"anonymous":false,"inputs":[{"indexed":true,"internalType":"string","name":"_to","type":"string"},{"indexed":false,"internalType":"uint256","name":"_value","type":"uint256"}],"name":"to_eon","type":"event"},{"inputs":[],"name":"contractCreator","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"eth_addresses","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"from_volume","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"owner","outputs":[{"internalType":"address","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[],"name":"renounceOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"to_volume","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"address","name":"newOwner","type":"address"}],"name":"transferOwnership","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[],"name":"wXEQContract","outputs":[{"internalType":"contract IERC20","name":"","type":"address"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"xeq_amounts","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"string","name":"","type":"string"}],"name":"xeq_complete","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_value","type":"uint256"}],"name":"devFee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_value","type":"uint256"},{"internalType":"uint256","name":"devFeeVal1","type":"uint256"}],"name":"devFee","outputs":[{"internalType":"uint256","name":"","type":"uint256"}],"stateMutability":"pure","type":"function"},{"inputs":[{"internalType":"uint256","name":"val","type":"uint256"}],"name":"setDevFee","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"string","name":"_to","type":"string"}],"name":"request_to_xeq","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"tx_hash","type":"string"}],"name":"claim_from_xeq","outputs":[],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"address","name":"account","type":"address"},{"internalType":"string","name":"tx_hash","type":"string"},{"internalType":"uint256","name":"amount","type":"uint256"}],"name":"register","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"nonpayable","type":"function"},{"inputs":[{"internalType":"string","name":"tx_hash","type":"string"}],"name":"isSwapRegistered","outputs":[{"internalType":"bool","name":"","type":"bool"}],"stateMutability":"view","type":"function"},{"inputs":[{"internalType":"uint256","name":"_amount","type":"uint256"},{"internalType":"address","name":"_addy","type":"address"}],"name":"adminTransfer","outputs":[],"stateMutability":"nonpayable","type":"function"}]
 let erc20Contract;
 
+let interval_balance = null
+let interval_daily = null
+let interval_pending = null
 
 /**
  * Setup the orchestra
@@ -63,25 +68,25 @@ async function init() {
   const chainData = evmChains.getChain(chainId);
   document.querySelector("#network-name").innerHTML = chainData.name;
 
-
   uniswapContract = new web3.eth.Contract(uniswapContractAbi, "0x631540a0f8908559f6c09f5bf1510e467f66715d")
   uniswapContract2 = new web3.eth.Contract(uniswapContractAbi, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
 
   stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
-  let total_wxeq_eth_deposited = await stakingContract.methods.getPoolTotalDeposited(1).call();
   let total_wxeq_deposited = await stakingContract.methods.getPoolTotalDeposited(0).call();
 
-  let uniswap_wxeq_reserve = await uniswapContract.methods.getReserves().call()
-  console.log(uniswap_wxeq_reserve)
 
   document.querySelector("#total_staked").innerHTML = (total_wxeq_deposited / 1e18).toLocaleString() + " wXEQ";
 //   document.querySelector("#total_wxeq-eth_deposited").innerHTML = (total_wxeq_eth_deposited / 1e18).toLocaleString() + " wXEQ-ETH";
 
 //   document.querySelector("#wxeq_eth_apy").innerHTML = (((0.4840336 * .7) * 6526 * 365) / (uniswap_wxeq_reserve.reserve0 / 1e18) * 100).toLocaleString() + "%";
 
-  document.querySelector("#apy").innerHTML = (((0.4840336 * .3) * 6526 * 365) / (total_wxeq_deposited / 1e18) * 100).toLocaleString() + "%";
-    
-  fetchBlockNumber()
+    let reward_weight = (await stakingContract.methods.getPoolRewardWeight(0).call()) / 100
+
+    let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
+
+    document.querySelector("#apy").innerHTML = (((reward * reward_weight) * 6526 * 365) / (total_wxeq_deposited / 1e18) * 100).toLocaleString() + "%";
+
+    fetchBlockNumber()
     fetchGasPrice()
     setInterval(fetchBlockNumber, 10000)
     setInterval(fetchGasPrice, 10000)
@@ -255,10 +260,9 @@ async function fetchAccountData() {
   selectedAccount = accounts[0];
 
   // Display fully loaded UI for wallet data
-  document.querySelector("#prepare").style.display = "none";
-  document.querySelector("#connected").style.display = "block";
+  $("#prepare").hide()
+  $("#connected").show();
   document.querySelector("#network-name").innerHTML = chainData.name;
-  document.querySelector("#user_panel").style.display = "block";
   document.querySelector("#account").innerHTML = accounts[0]
 
   let total_wxeq_deposited = await fetchTotalStakedAmount(0)
@@ -270,7 +274,7 @@ async function fetchAccountData() {
   document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 0) / 1e18).toLocaleString() + " wXEQ";
   erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
   document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ";
-  document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3") / 1e18).toLocaleString() + " wXEQ";
+  document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3") / 1e18).toLocaleString() + " wXEQ"
 
   var connected = document.querySelectorAll(".connected");
 
@@ -292,8 +296,8 @@ async function refreshAccountData() {
   // If any current data is displayed when
   // the user is switching acounts in the wallet
   // immediate hide this data
-  document.querySelector("#connected").style.display = "none";
-  document.querySelector("#prepare").style.display = "block";
+  $("#connected").hide()
+  $("#prepare").show()
 
   // Disable button while UI is loading.
   // fetchAccountData() will take a while as it communicates
@@ -340,9 +344,10 @@ async function onConnect() {
   document.querySelector("#withdraw").addEventListener("click", onWithdraw);
   document.querySelector("#deposit_modal_button").addEventListener('click', onDepositModal)
 
-  setInterval(updatePending, 5000)
-  setInterval(updateDailyReward, 5000)
-  setInterval(updateBalance, 5000)
+  $("#user_panel").show()
+  interval_pending = setInterval(updatePending, 5000)
+  interval_daily = setInterval(updateDailyReward, 5000)
+  interval_balance = setInterval(updateBalance, 5000)
 
   await refreshAccountData();
 }
@@ -353,6 +358,12 @@ async function onConnect() {
 async function onDisconnect() {
 
   console.log("Killing the wallet connection", provider);
+  $("#prepare").show();
+  $("#connected").hide()
+  $("user_panel").hide()
+  clearInterval(interval_balance)
+  clearInterval(interval_daily)
+  clearInterval(interval_pending)
 
   // TODO: Which providers have close method?
   if(provider.close) {
@@ -363,21 +374,23 @@ async function onDisconnect() {
     // and does not allow to re-scan the QR code with a new wallet.
     // Depending on your use case you may want or want not his behavir.
     await web3Modal.clearCachedProvider();
-    provider = null;
-  }
+    provider = new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/079430f0746145d291bba904431ce803")
+}
 
   selectedAccount = null;
 
   // Set the UI back to the initial state
-  document.querySelector("#prepare").style.display = "block";
-  document.querySelector("#connected").style.display = "none";
+
 }
 
 async function onWXEQ()
 {
+    $("#user_panel").show()
+    $("#swap_panel").hide()
     document.querySelector("#wXEQStaking").classList.add('active')
     document.querySelector("#wXEQETHStaking").classList.remove('active')
     document.querySelector("#wXEQUSDCStaking").classList.remove('active')
+    document.querySelector("#swaps").classList.remove('active')
     document.querySelector("#staking_type").innerHTML = "wXEQ";
 
     let total_wxeq_deposited = await stakingContract.methods.getPoolTotalDeposited(0).call();
@@ -391,7 +404,7 @@ async function onWXEQ()
 
     let user_staked = await fetchStakedAccount(selectedAccount, 0);
     console.log(total_wxeq_deposited)
-    document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " wXEQ";
+    document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " wXEQ (" + ((user_staked / total_wxeq_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
     document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_deposited/1e18))).toLocaleString() + " wXEQ";
     document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 0) / 1e18).toLocaleString() + " wXEQ";
     erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
@@ -404,9 +417,12 @@ async function onWXEQ()
 
 async function onWXEQUSDC()
 {
+    $("#user_panel").show()
+    $("#swap_panel").hide()
     document.querySelector("#wXEQStaking").classList.remove('active')
     document.querySelector("#wXEQETHStaking").classList.remove('active')
     document.querySelector("#wXEQUSDCStaking").classList.add('active')
+    document.querySelector("#swaps").classList.remove('active')
     document.querySelector("#staking_type").innerHTML = "wXEQ-USDC";
 
     let uniswap_wxeq_usdc = await uniswapContract2.methods.getReserves().call()
@@ -426,21 +442,24 @@ async function onWXEQUSDC()
 
     let user_staked = await fetchStakedAccount(selectedAccount, 2);
     document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString(undefined,
-        {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";
+        {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC (" + ((user_staked / total_wxeq_usdc_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
 
-    document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_usdc_deposited/1e18))).toLocaleString() + " wXEQ";
+    document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_usdc_deposited/1e18))).toLocaleString() + " wXEQ";;
     document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 2) / 1e18).toLocaleString() + " wXEQ";
     erc20Contract = new web3.eth.Contract(ERC20ABI, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
     document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ-USDC";
     document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x71fa26f268c7bc6083f131f39917d01248e66cf6") / 1e18).toLocaleString(undefined,
-        {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";
+        {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC"
 }
 
 async function onWXEQETH()
 {
+    $("#user_panel").show()
+    $("#swap_panel").hide()
     document.querySelector("#wXEQStaking").classList.remove('active')
     document.querySelector("#wXEQUSDCStaking").classList.remove('active')
     document.querySelector("#wXEQETHStaking").classList.add('active')
+    document.querySelector("#swaps").classList.remove('active')
     let total_wxeq_eth_deposited = await stakingContract.methods.getPoolTotalDeposited(1).call();
   
     let uniswap_wxeq_reserve = await uniswapContract.methods.getReserves().call()
@@ -456,7 +475,7 @@ async function onWXEQETH()
     document.querySelector("#staking_type").innerHTML = "wXEQ-ETH";
 
     let user_staked = await fetchStakedAccount(selectedAccount, 1);
-    document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " wXEQ-ETH";
+    document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " wXEQ-ETH  (" + ((user_staked / total_wxeq_usdc_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
     document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_eth_deposited/1e18))).toLocaleString() + " wXEQ";
     document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 1) / 1e18).toLocaleString() + " wXEQ";
     erc20Contract = new web3.eth.Contract(ERC20ABI, "0x631540a0f8908559f6c09f5bf1510e467f66715d")
@@ -481,10 +500,7 @@ async function onDeposit() {
     stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
 
     let amountString = document.querySelector("#amount_deposit").value
-    let int = parseInt(parseFloat(amountString) * 10000)
-    let amount = new web3.utils.toBN(int)
-
-    amount = new web3.utils.toBN(amount * 1e14);
+    let amount = web3.utils.toWei(amountString, 'ether')
 
     let staking_tx = await stakingContract.methods.deposit(pool_id, amount).send({from:selectedAccount});
 
@@ -558,8 +574,7 @@ async function onWithdraw() {
     stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
 
     let amountString = document.querySelector("#amount_withdraw").value
-    let int = parseInt(parseFloat(amountString) * 10000)
-    let amount = new web3.utils.toBN(int)
+    let amount = web3.utils.toWei(amountString, 'ether')
 
     amount = new web3.utils.toBN(amount * 1e14);
 
@@ -600,10 +615,7 @@ $("#approve").click(async function () {
     }
 
     let amountString = document.querySelector("#amount_deposit").value
-    let int = parseInt(parseFloat(amountString) * 10000)
-    let amount = new web3.utils.toBN(int)
-
-    amount = new web3.utils.toBN(amount * 1e14);
+    let amount = web3.utils.toWei(amountString, 'ether')
 
     console.log(amount)
 
@@ -628,6 +640,7 @@ $("#approve").click(async function () {
 
 async function onDepositModal() {
     $("#modal_deposit").show()
+    $("#deposit").hide()
     let pool = $("#staking_type").innerHTML
 
     if(pool == "wXEQ-ETH")
@@ -645,9 +658,11 @@ async function onDepositModal() {
 
     if  ((await fetchApprovedCoins(selectedAccount) / 1e18) > 0) 
     {
+        console.log("Have coins approved!")
         $("#approve").hide();
-    } else {
         $("#deposit").show();
+    } else {
+        $("#deposit").hide();
     }
 
 }
@@ -665,6 +680,67 @@ $( "#modal_withdraw_close" ).click(function() {
 });
 
 
+$( "#swaps" ).click(function() {
+    $("#claim_wxeq_swap").hide()
+    $("#user_panel").hide()
+    $("#swap_panel").show()
+    $("#warning_text").hide()
+    document.querySelector("#wXEQStaking").classList.remove('active')
+    document.querySelector("#wXEQUSDCStaking").classList.remove('active')
+    document.querySelector("#wXEQETHStaking").classList.remove('active')
+    document.querySelector("#swaps").classList.add('active')
+
+});
+
+$("#check_status").click(async function(){
+
+    $("#warning_text").hide()
+
+    let bridge_contract = new web3.eth.Contract(bridgeABI, "0x0bC3F57c2FaF674561641e983aB1Ce7F928BDA7C")
+
+
+    let tx_hash = $("#xeq_swap_transaction_hash").val()
+
+    console.log(tx_hash)
+
+    let registerd = await bridge_contract.methods.isSwapRegistered(tx_hash).call()
+    console.log(bridge_contract.methods)
+    let claimed = await bridge_contract.methods.xeq_complete(tx_hash).call()
+    console.log(claimed)
+
+    if (registerd && !claimed)
+    {
+        $("#check_status").hide()
+        $("#claim_wxeq_swap").show()
+    } else {
+        if(!claimed){
+            $("#warning_text").text("Swap not registered yet! Try again later.")
+            $("#warning_text").css("color", "red")
+            $("#warning_text").show()
+        } else {
+            $("#warning_text").text("Swap already claimed!")
+            $("#warning_text").css("color", "green")
+            $("#warning_text").show()
+        }
+    }
+})
+
+$("#claim_wxeq_swap").click(async function(){
+
+    let bridge_contract = new web3.eth.Contract(bridgeABI, "0x0bC3F57c2FaF674561641e983aB1Ce7F928BDA7C")
+
+    let tx_hash = $("#xeq_swap_transaction_hash").val()
+
+    let tx = await bridge_contract.methods.claim_from_xeq(tx_hash).send({from: selectedAccount})
+
+    console.log(tx)
+})
+
+$("#btn-disconnect").click(function(){
+    $("#user_panel").hide()
+})
+
+
 /**
  * Main entry point.
  */
@@ -677,3 +753,8 @@ window.addEventListener('load', async () => {
   document.querySelector("#wXEQUSDCStaking").addEventListener("click", onWXEQUSDC);
 
 });
+
+$(document).ready(function(){
+    $("#user_panel").hide()
+    $("#swap_panel").hide()
+})
