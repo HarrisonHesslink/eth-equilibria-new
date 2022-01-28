@@ -592,8 +592,6 @@ async function onWithdraw() {
     let amountString = document.querySelector("#amount_withdraw").value
     let amount = web3.utils.toWei(amountString, 'ether')
 
-    amount = new web3.utils.toBN(amount * 1e14);
-
     let staking_tx = await stakingContract.methods.withdraw(pool_id, amount).send({from:selectedAccount});
 
     if (pool_id == 0)
