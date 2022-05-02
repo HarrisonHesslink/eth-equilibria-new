@@ -34,6 +34,14 @@ let interval_balance = null
 let interval_daily = null
 let interval_pending = null
 
+let network = "eth"
+
+let eth_staking = "0x6550E728afaf5414952490E95B9586C5e8eB5b8c"
+let avax_staking = ""
+
+let eth_token = "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3"
+let avax_token = ""
+
 /**
  * Setup the orchestra
  */
@@ -60,7 +68,10 @@ async function init() {
     providerOptions, // required
   });
 
-  provider = new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/079430f0746145d291bba904431ce803")
+  if(network == "eth")
+    provider = new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/079430f0746145d291bba904431ce803")
+  else 
+    provider = new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/079430f0746145d291bba904431ce803") 
 
   web3 = new Web3(provider)
   const chainId = await web3.eth.getChainId();
@@ -70,7 +81,8 @@ async function init() {
   uniswapContract = new web3.eth.Contract(uniswapContractAbi, "0x631540a0f8908559f6c09f5bf1510e467f66715d")
   uniswapContract2 = new web3.eth.Contract(uniswapContractAbi, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
 
-  stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+  stakingContract = getContract('STK',"eth",stakingContractAbi)
+
   let total_wxeq_deposited = await stakingContract.methods.getPoolTotalDeposited(0).call();
 
 
@@ -116,9 +128,9 @@ async function fetchPending(user, pool)
     return await stakingContract.methods.getStakeTotalUnclaimed(user, pool).call();
 }
 
-async function fetchBalance(user, token)
+async function fetchBalance(user, token, network)
 {
-    erc20Contract = new web3.eth.Contract(ERC20ABI, token)
+    erc20Contract = getContract('STK',"eth", ERC20ABI)
 
     return erc20Contract.methods.balanceOf(user).call()
 }
@@ -131,7 +143,7 @@ async function updatePending() {
 
     let pool_id = 0;
     let pool = document.querySelector("#staking_type").innerHTML
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+    stakingContract = getContract('STK',"eth",stakingContractAbi)
 
     if(pool == "wXEQ-ETH")
     {
@@ -151,7 +163,7 @@ async function updateDailyReward() {
 
     let pool_id = 0;
     let pool = document.querySelector("#staking_type").innerHTML
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+    stakingContract = getContract('STK',"eth",stakingContractAbi)
 
     if(pool == "wXEQ-ETH")
     {
@@ -215,7 +227,7 @@ async function updateBalance()
 {
     let pool_id = 0;
     let pool = document.querySelector("#staking_type").innerHTML
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+    stakingContract = getContract('STK',"eth",stakingContractAbi)
 
     if(pool == "wXEQ-ETH")
     {
@@ -344,8 +356,6 @@ async function onConnect() {
   document.querySelector("#deposit_modal_button").addEventListener('click', onDepositModal)
 
 
-  $("#swaps").removeAttr("disabled");
-
   $("#user_panel").show()
   interval_pending = setInterval(updatePending, 5000)
   interval_daily = setInterval(updateDailyReward, 5000)
@@ -368,7 +378,6 @@ async function onDisconnect() {
   clearInterval(interval_balance)
   clearInterval(interval_daily)
   clearInterval(interval_pending)
-  $("#swaps").prop('disabled', true);
 
   // TODO: Which providers have close method?
   if(provider.close) {
@@ -398,7 +407,6 @@ async function onWXEQ()
         document.querySelector("#wXEQStaking").classList.add('active')
         document.querySelector("#wXEQETHStaking").classList.remove('active')
         document.querySelector("#wXEQUSDCStaking").classList.remove('active')
-        document.querySelector("#swaps").classList.remove('active')
         document.querySelector("#staking_type").innerHTML = "wXEQ";
 
         let total_wxeq_deposited = await stakingContract.methods.getPoolTotalDeposited(0).call();
@@ -418,9 +426,6 @@ async function onWXEQ()
         erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
         document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ";
         document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3") / 1e18).toLocaleString() + " wXEQ";
-    
-   
-
 }
 
 async function onWXEQUSDC()
@@ -433,7 +438,6 @@ async function onWXEQUSDC()
         document.querySelector("#wXEQStaking").classList.remove('active')
         document.querySelector("#wXEQETHStaking").classList.remove('active')
         document.querySelector("#wXEQUSDCStaking").classList.add('active')
-        document.querySelector("#swaps").classList.remove('active')
         document.querySelector("#staking_type").innerHTML = "wXEQ-USDC";
 
         let uniswap_wxeq_usdc = await uniswapContract2.methods.getReserves().call()
@@ -475,7 +479,6 @@ async function onWXEQETH()
     document.querySelector("#wXEQStaking").classList.remove('active')
     document.querySelector("#wXEQUSDCStaking").classList.remove('active')
     document.querySelector("#wXEQETHStaking").classList.add('active')
-    document.querySelector("#swaps").classList.remove('active')
     let total_wxeq_eth_deposited = await stakingContract.methods.getPoolTotalDeposited(1).call();
   
     let uniswap_wxeq_reserve = await uniswapContract.methods.getReserves().call()
@@ -513,7 +516,7 @@ async function onDeposit() {
         pool_id = 2
     }
 
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+    stakingContract = getContract('STK',"eth",stakingContractAbi)
 
     let amountString = document.querySelector("#amount_deposit").value
     let amount = web3.utils.toWei(amountString, 'ether')
@@ -552,7 +555,7 @@ async function onClaim() {
         pool_id = 2
     }
 
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+    stakingContract = getContract('STK',"eth",stakingContractAbi)
 
     let staking_tx = await stakingContract.methods.claim(pool_id).send({from:selectedAccount});
 
@@ -587,7 +590,7 @@ async function onWithdraw() {
         pool_id = 2
     }
 
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+    stakingContract = getContract('STK',"eth",stakingContractAbi)
 
     let amountString = document.querySelector("#amount_withdraw").value
     let amount = web3.utils.toWei(amountString, 'ether')
@@ -693,22 +696,9 @@ $( "#modal_withdraw_close" ).click(function() {
     $("#modal_withdraw").hide()
 });
 
-
-$( "#swaps" ).click(function() {
-    console.log(selectedAccount)
-    $("#claim_wxeq_swap").hide()
-    if(selectedAccount != null)
-    {
-        $("#user_panel").hide()
-        $("#swap_panel").show()
-    }
-    $("#warning_text").hide()
-    document.querySelector("#wXEQStaking").classList.remove('active')
-    document.querySelector("#wXEQUSDCStaking").classList.remove('active')
-    document.querySelector("#wXEQETHStaking").classList.remove('active')
-    document.querySelector("#swaps").classList.add('active')
-
-});
+$("#network_avax").click(function(){
+    provider = new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/079430f0746145d291bba904431ce803")
+})
 
 $("#check_status").click(async function(){
 
@@ -776,3 +766,43 @@ $(document).ready(function(){
     $("#user_panel").hide()
     $("#swap_panel").hide()
 })
+
+function getContract(type, network_type, abi)
+{
+    let address = ""
+    switch (type) {
+        case 'BR':
+            {
+                if(network_type == "eth")
+                {
+                    address = ""
+                } else {
+                    address = "" 
+                }
+                break
+            }
+        case 'TK':
+            {
+                if(network_type == "eth")
+                {
+                    address = eth_token
+                } else {
+                    address = avax_token 
+                }
+                break
+            }
+        case 'STK':
+            {
+                if(network_type == "eth")
+                {
+                    address = eth_staking
+                } else {
+                    address = avax_staking
+                }
+                break
+            }
+    }
+
+    return new web3.eth.Contract(abi, address)
+
+}
