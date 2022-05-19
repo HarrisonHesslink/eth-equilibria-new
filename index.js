@@ -1,3 +1,4 @@
+
 const Web3Modal = window.Web3Modal.default;
 const WalletConnectProvider = window.WalletConnectProvider.default;
 const Fortmatic = window.Fortmatic;
@@ -73,7 +74,7 @@ async function init() {
   stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
   let total_wxeq_deposited = await stakingContract.methods.getPoolTotalDeposited(0).call();
 
-
+  $("check_swap_card").hide();
   document.querySelector("#total_staked").innerHTML = (total_wxeq_deposited / 1e18).toLocaleString() + " wXEQ";
 //   document.querySelector("#total_wxeq-eth_deposited").innerHTML = (total_wxeq_eth_deposited / 1e18).toLocaleString() + " wXEQ-ETH";
 
@@ -341,10 +342,12 @@ async function onConnect() {
   document.querySelector("#deposit").addEventListener("click", onDeposit);
   document.querySelector("#claim").addEventListener("click", onClaim);
   document.querySelector("#withdraw").addEventListener("click", onWithdraw);
-  document.querySelector("#deposit_modal_button").addEventListener('click', onDepositModal)
 
 
   $("#swaps").removeAttr("disabled");
+  $("#new_approve_button").hide()
+  $("#final_new_deposit_button").hide()
+$("#deposit_withdraw_back").hide()
 
   $("#user_panel").show()
   interval_pending = setInterval(updatePending, 5000)
@@ -697,6 +700,11 @@ $( "#modal_withdraw_close" ).click(function() {
 $( "#swaps" ).click(function() {
     console.log(selectedAccount)
     $("#claim_wxeq_swap").hide()
+    $("#check_swap_card").hide();
+    $("#finish_swap").hide();
+    $("#swap_approve").hide();
+    $("#check_swap_status").hide()
+
     if(selectedAccount != null)
     {
         $("#user_panel").hide()
@@ -754,8 +762,252 @@ $("#claim_wxeq_swap").click(async function(){
     console.log(tx)
 })
 
+$("#register_swap").click(async function(){
+
+    let xeq_address = $("#wxeq_swap_address").val()
+    let wxeq_amount = $("#wxeq_swap_amount").val()
+    $("#finished_wxeq_swap_amount").val(wxeq_amount)
+    $("#finished_wxeq_swap_address").val(xeq_address)
+
+    $("#swap_approve_amount").val(wxeq_amount)
+    $("#start_swap").hide()
+    $("#swap_approve").show()
+})
+
+$("#approve_swap").click(async function(){
+    erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
+
+    let approved_coins = await erc20Contract.methods.allowance(selectedAccount, "0x0bc3f57c2faf674561641e983ab1ce7f928bda7c").call()
+
+
+    let amountString = $("#swap_approve_amount").val()
+    let amount = web3.utils.toWei(amountString, 'ether')
+
+    if(approved_coins  >= amount)
+    {
+        $("#swap_approve").hide()
+        $("#finish_swap").show()
+    } 
+
+    let approve_tx = await erc20Contract.methods.approve("0x0bc3f57c2faf674561641e983ab1ce7f928bda7c", amount).send({from:selectedAccount})
+    console.log(approve_tx)
+    if(approve_tx)
+    {
+        $("#swap_approve").hide()
+        $("#finish_swap").show()
+    }
+
+})
+
+$("#finish_swap").click(async function(){
+    let bridge_contract = new web3.eth.Contract(bridgeABI, "0x0bC3F57c2FaF674561641e983aB1Ce7F928BDA7C")
+    let wxeq_address = $("#finished_wxeq_swap_address").val()
+    let wxeq_amount = $("#finished_wxeq_swap_amount").val()
+
+    let amount = web3.utils.toWei(wxeq_amount, 'ether')
+
+    let tx = await bridge_contract.methods.request_to_xeq(amount, wxeq_address).send({from: selectedAccount})
+
+    console.log(tx)
+})
+
+$("#open_check_swap").click(async function(){
+    $("#open_check_swap").hide();
+    $("#check_swap_card").show();
+    $("#register_swap_card").hide()
+})
+
+$("#close_check_swap").click(async function(){
+    $("#open_check_swap").show();
+    $("#check_swap_card").hide();
+    $("#register_swap_card").show()
+})
+
+$("#deposit_withdraw_back").click(async function(){
+    $("#new_withdrawal_button").show();
+    $("#new_deposit_button").show();
+    $("#deposit_withdraw_back").hide()
+    $("#final_new_deposit_button").hide();
+    $("#new_approve_button").hide();
+    $("#deposit_withdraw_amount").attr("disabled", false)
+
+})
+$("#check_swap").click(async function(){
+    $("#check_swap_status_message").html("Status: Waiting")
+    $("#check_swap_status_message").attr("style", "color:yellow")
+    $("#check_swap_status").show()
+})
+
+
+
+$("#new_deposit_button").click(async function(){
+
+    $("#new_withdrawal_button").hide();
+    $("#new_deposit_button").show();
+    $("#new_approve_button").hide();
+    $("#final_new_deposit_button").hide();
+    $("#deposit_withdraw_back").show()
+
+    let pool = $("#staking_type").innerHTML
+
+
+    if(pool == "wXEQ-ETH")
+    {
+        pool_id = 1
+        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x631540a0f8908559f6c09f5bf1510e467f66715d")
+    } else if (pool == "wXEQ") {
+        pool_id = 0
+        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
+    } else if(pool == "wXEQ-USDC")
+    {
+        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
+        pool_id = 2
+    }
+
+    let approved_coins = await erc20Contract.methods.allowance(selectedAccount, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c").call()
+
+    let amountString = $("#deposit_withdraw_amount").val()
+    let amount = web3.utils.toWei(amountString, 'ether')
+
+    console.log(approved_coins)
+
+    if(approved_coins >= amount)
+    {
+        $("#final_new_deposit_button").show();
+        $("#new_approve_button").hide()
+    } else {
+        $("#new_approve_button").show()
+    }
+    $("#new_deposit_button").hide()
+    $("#deposit_withdraw_amount").attr("disabled", true)
+
+})
+
+$("#new_withdrawal_button").click(async function(){
+    $("#new_deposit_button").hide();
+    $("#deposit_withdraw_back").show()
+
+    let pool_id = 0;
+    let pool = $("#staking_type").innerHTML
+
+    if(pool == "wXEQ-ETH")
+    {
+        pool_id = 1
+    } else if (pool == "wXEQ") {
+        pool_id = 0
+    } else if(pool == "wXEQ-USDC")
+    {
+        pool_id = 2
+    }
+
+    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+
+    let amountString = $("#deposit_withdraw_amount").val()
+    let amount = web3.utils.toWei(amountString, 'ether')
+
+    if(amount > (await fetchStakedAccount(selectedAccount, pool_id)))
+    {
+        $("#new_withdrawal_button").show();
+        $("#new_deposit_button").show();
+        $("#deposit_withdraw_back").hide()
+        $("#final_new_deposit_button").hide();
+        $("#new_approve_button").hide();
+        $("#deposit_withdraw_amount").attr("disabled", false)
+    } else {
+        let staking_tx = await stakingContract.methods.withdraw(pool_id, amount).send({from:selectedAccount});
+
+        if (pool_id == 0)
+        {
+            document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 0) / 1e18).toLocaleString() + " wXEQ";
+        }
+
+        if (pool_id == 1)
+        {
+            document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 1) / 1e18).toLocaleString() + " wXEQ-ETH";
+        }
+
+        if (pool_id == 2)
+        {
+            document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 2) / 1e18).toLocaleString() + " wXEQ-USDC";
+        }
+    }
+
+})
+
+$("#new_approve_button").click(async function(){
+
+    let pool = $("#staking_type").innerHTML
+
+    if(pool == "wXEQ-ETH")
+    {
+        pool_id = 1
+        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x631540a0f8908559f6c09f5bf1510e467f66715d")
+    } else if (pool == "wXEQ") {
+        pool_id = 0
+        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
+    } else if(pool == "wXEQ-USDC")
+    {
+        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
+        pool_id = 2
+    }
+
+    let amountString = $("#deposit_withdraw_amount").val()
+    let amount = web3.utils.toWei(amountString, 'ether')
+
+    let approve_tx = await erc20Contract.methods.approve("0x6550E728afaf5414952490E95B9586C5e8eB5b8c", amount).send({from:selectedAccount})
+    console.log(approve_tx)
+    if(approve_tx)
+    {
+        $("#new_approve_button").hide()
+        $("#final_new_deposit_button").show()
+    }
+
+})
+
+$("#final_new_deposit_button").click(async function(){
+    let pool_id = 0;
+    let pool = $("#staking_type").innerHTML
+
+    if(pool == "wXEQ-ETH")
+    {
+        pool_id = 1
+    } else if (pool == "wXEQ") {
+        pool_id = 0
+    } else if(pool == "wXEQ-USDC")
+    {
+        pool_id = 2
+    }
+
+    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+
+    let amountString = $("#deposit_withdraw_amount").val()
+    let amount = web3.utils.toWei(amountString, 'ether')
+
+    let staking_tx = await stakingContract.methods.deposit(pool_id, amount).send({from:selectedAccount});
+
+    if (pool_id == 0)
+    {
+        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 0) / 1e18).toLocaleString() + " wXEQ";
+    }
+
+    if (pool_id == 1)
+    {
+        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 1) / 1e18).toLocaleString() + " wXEQ-ETH";
+    }
+
+    if (pool_id == 2)
+    {
+        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 2) / 1e18).toLocaleString(undefined,
+            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";
+    }
+
+})
+
+
 $("#btn-disconnect").click(function(){
     $("#user_panel").hide()
+
+    
 })
 
 
