@@ -848,7 +848,7 @@ $("#new_deposit_button").click(async function(){
     $("#final_new_deposit_button").hide();
     $("#deposit_withdraw_back").show()
 
-    let pool = $("#staking_type").innerHTML
+    let pool = document.querySelector("#staking_type").innerHTML
 
 
     if(pool == "wXEQ-ETH")
@@ -888,7 +888,7 @@ $("#new_withdrawal_button").click(async function(){
     $("#deposit_withdraw_back").show()
 
     let pool_id = 0;
-    let pool = $("#staking_type").innerHTML
+    let pool = document.querySelector("#staking_type").innerHTML
 
     if(pool == "wXEQ-ETH")
     {
@@ -936,7 +936,8 @@ $("#new_withdrawal_button").click(async function(){
 
 $("#new_approve_button").click(async function(){
 
-    let pool = $("#staking_type").innerHTML
+    let pool_id = 0
+    let pool = document.querySelector("#staking_type").innerHTML
 
     if(pool == "wXEQ-ETH")
     {
@@ -950,9 +951,12 @@ $("#new_approve_button").click(async function(){
         erc20Contract = new web3.eth.Contract(ERC20ABI, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
         pool_id = 2
     }
+    console.log(pool_id)
 
     let amountString = $("#deposit_withdraw_amount").val()
     let amount = web3.utils.toWei(amountString, 'ether')
+
+    console.log(amount)
 
     let approve_tx = await erc20Contract.methods.approve("0x6550E728afaf5414952490E95B9586C5e8eB5b8c", amount).send({from:selectedAccount})
     if(approve_tx)
@@ -970,7 +974,7 @@ $("#new_approve_button").click(async function(){
 
 $("#final_new_deposit_button").click(async function(){
     let pool_id = 0;
-    let pool = $("#staking_type").innerHTML
+    let pool = document.querySelector("#staking_type").innerHTML
 
     if(pool == "wXEQ-ETH")
     {
@@ -981,6 +985,8 @@ $("#final_new_deposit_button").click(async function(){
     {
         pool_id = 2
     }
+
+    console.log(pool_id)
 
     stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
 
