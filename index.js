@@ -955,11 +955,15 @@ $("#new_approve_button").click(async function(){
     let amount = web3.utils.toWei(amountString, 'ether')
 
     let approve_tx = await erc20Contract.methods.approve("0x6550E728afaf5414952490E95B9586C5e8eB5b8c", amount).send({from:selectedAccount})
-    console.log(approve_tx)
     if(approve_tx)
     {
-        $("#new_approve_button").hide()
-        $("#final_new_deposit_button").show()
+        let approved_coins = await erc20Contract.methods.allowance(selectedAccount, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c").call()
+
+        if(approved_coins > 0)
+        {
+            $("#new_approve_button").hide()
+            $("#final_new_deposit_button").show()
+        }
     }
 
 })
