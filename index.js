@@ -126,9 +126,9 @@ async function getPooledBalances() {
 
   console.log(eth_balances.toLocaleString() + " eth", usdc_balances.toLocaleString() + " usdc", xeq_balances.toLocaleString() + " xeq")
 
-    $("#total_staked_xeq").html(xeq_balances.toLocaleString() + " " + symbol)
-    $("#total_staked_eth").html(eth_balances.toLocaleString() + " ETH")
-    $("#total_staked_usdc").html(usdc_balances.toLocaleString() + " USDC")
+    $("#total_staked_xeq").html(xeq_balances.toLocaleString())
+    $("#total_staked_eth").html(eth_balances.toLocaleString())
+    $("#total_staked_usdc").html(usdc_balances.toLocaleString())
 
 
 }
