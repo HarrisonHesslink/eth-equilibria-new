@@ -85,6 +85,7 @@ async function checkTransaction(tx_hash){
 
 async function getPooledBalances() {
 
+  // eth provider
   let _provider = new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/079430f0746145d291bba904431ce803")
   let _web3 = new Web3(_provider)
 
@@ -105,6 +106,7 @@ async function getPooledBalances() {
   let eth_xeqUSDC_usdc = await token.methods.balanceOf("0x71FA26f268c7bc6083F131F39917D01248E66Cf6").call()
   usdc_balances = BigInt(eth_xeqUSDC_usdc)
 
+  // avax provider
   _provider = new Web3.providers.HttpProvider("https://api.avax.network/ext/bc/C/rpc")
   _web3 = new Web3(_provider)
 
