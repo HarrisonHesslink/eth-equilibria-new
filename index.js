@@ -16,7 +16,7 @@ let stakingContractAbi = [{"inputs":[{"internalType":"contract IMintableERC20","
 let stakingContract;
 
 let stakingInstance;
-
+let tokenAddress
 // Address of the selected account
 let selectedAccount;
 
@@ -34,62 +34,16 @@ let erc20Contract;
 let interval_balance = null
 let interval_daily = null
 let interval_pending = null
-
+let symbol = "wXEQ"
+let wxeqUSDCAddress = ""
+let wxeqETHAddress = ""
+let stakingAddress = ""
+let bridgeAddress = ""
 /**
  * Setup the orchestra
  */
 async function init() {
 
-  console.log("Initializing example");
-  console.log("WalletConnectProvider is", WalletConnectProvider);
-  console.log("window.web3 is", window.web3, "window.ethereum is", window.ethereum);
-
-  // Tell Web3modal what providers we have available.
-  // Built-in web browser provider (only one can exist as a time)
-  // like MetaMask, Brave or Opera is added automatically by Web3modal
-  const providerOptions = {
-    walletconnect: {
-        package: WalletConnectProvider, // required
-        options: {
-          infuraId: "079430f0746145d291bba904431ce803" // required
-        }
-      }
-  };
-
-  web3Modal = new Web3Modal({
-    cacheProvider: false, // optional
-    providerOptions, // required
-  });
-
-  provider = new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/079430f0746145d291bba904431ce803")
-
-  web3 = new Web3(provider)
-  const chainId = await web3.eth.getChainId();
-  const chainData = evmChains.getChain(chainId);
-  document.querySelector("#network-name").innerHTML = chainData.name;
-
-  uniswapContract = new web3.eth.Contract(uniswapContractAbi, "0x631540a0f8908559f6c09f5bf1510e467f66715d")
-  uniswapContract2 = new web3.eth.Contract(uniswapContractAbi, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
-
-  stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
-  let total_wxeq_deposited = await stakingContract.methods.getPoolTotalDeposited(0).call();
-
-  $("check_swap_card").hide();
-  document.querySelector("#total_staked").innerHTML = (total_wxeq_deposited / 1e18).toLocaleString() + " wXEQ";
-//   document.querySelector("#total_wxeq-eth_deposited").innerHTML = (total_wxeq_eth_deposited / 1e18).toLocaleString() + " wXEQ-ETH";
-
-//   document.querySelector("#wxeq_eth_apy").innerHTML = (((0.4840336 * .7) * 6526 * 365) / (uniswap_wxeq_reserve.reserve0 / 1e18) * 100).toLocaleString() + "%";
-
-    let reward_weight = (await stakingContract.methods.getPoolRewardWeight(0).call()) / 100
-
-    let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
-
-    document.querySelector("#apy").innerHTML = (((reward * reward_weight) * 6526 * 365) / (total_wxeq_deposited / 1e18) * 100).toLocaleString() + "%";
-
-    fetchBlockNumber()
-    fetchGasPrice()
-    setInterval(fetchBlockNumber, 10000)
-    setInterval(fetchGasPrice, 10000)
 }
 
 async function fetchBlockNumber() {
@@ -119,6 +73,7 @@ async function fetchPending(user, pool)
 
 async function fetchBalance(user, token)
 {
+  console.log(user, token)
     erc20Contract = new web3.eth.Contract(ERC20ABI, token)
 
     return erc20Contract.methods.balanceOf(user).call()
@@ -132,19 +87,18 @@ async function updatePending() {
 
     let pool_id = 0;
     let pool = document.querySelector("#staking_type").innerHTML
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
 
     if(pool == "wXEQ-ETH")
     {
-        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 1) / 1e18).toFixed(2).toLocaleString() + " wXEQ";
+        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 1) / 1e18).toFixed(2).toLocaleString() + " " + symbol;
 
     } else if (pool == "wXEQ") {
 
-        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 0) / 1e18).toFixed(2).toLocaleString() + " wXEQ";
+        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 0) / 1e18).toFixed(2).toLocaleString() + " " + symbol;
 
     } else if(pool == "wXEQ-USDC")
     {
-        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 2) / 1e18).toFixed(2).toLocaleString() + " wXEQ";
+        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 2) / 1e18).toFixed(2).toLocaleString() + " " + symbol;
     }
 }
 
@@ -152,12 +106,13 @@ async function updateDailyReward() {
 
     let pool_id = 0;
     let pool = document.querySelector("#staking_type").innerHTML
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+  console.log(pool)
 
-    if(pool == "wXEQ-ETH")
+    if(pool == symbol + "-ETH")
     {
+      console.log("test")
         let total_wxeq_eth_deposited = await stakingContract.methods.getPoolTotalDeposited(1).call();
-  
+
         let user_staked = await fetchStakedAccount(selectedAccount, 1);
 
         let reward_weight = (await stakingContract.methods.getPoolRewardWeight(0).call()) / 100
@@ -166,9 +121,10 @@ async function updateDailyReward() {
 
         let daily_reward = ((reward * reward_weight) * 6526)
         let user_share = (user_staked /1e18)/(total_wxeq_eth_deposited/1e18)
-        document.querySelector("#daily_returns").innerHTML = (daily_reward * user_share).toLocaleString() + " wXEQ";
+        document.querySelector("#daily_returns").innerHTML = (daily_reward * user_share).toLocaleString() + " " + symbol;
 
-    } else if (pool == "wXEQ") {
+    } else if (pool == symbol + "") {
+      console.log("test 1")
 
         let total_wxeq_deposited = await fetchTotalStakedAmount(0)
         let user_staked = await fetchStakedAccount(selectedAccount, 0);
@@ -178,10 +134,11 @@ async function updateDailyReward() {
 
         let daily_reward = ((reward * reward_weight) * 6526)
         let user_share = (user_staked /1e18)/(total_wxeq_deposited/1e18)
-        document.querySelector("#daily_returns").innerHTML = (daily_reward * user_share).toLocaleString() + " wXEQ";
+        document.querySelector("#daily_returns").innerHTML = (daily_reward * user_share).toLocaleString() + " " + symbol;
 
-    } else if(pool == "wXEQ-USDC")
+    } else if(pool == symbol + "-USDC")
     {
+      console.log("test 2")
         let total_wxeq_usdc_deposited = await fetchTotalStakedAmount(2)
         let reward_weight = (await stakingContract.methods.getPoolRewardWeight(2).call()) / 100
 
@@ -208,7 +165,7 @@ async function updateDailyReward() {
             user_share = 0
         }
 
-        document.querySelector("#daily_returns").innerHTML = (daily_reward * user_share).toLocaleString() + " wXEQ";
+        document.querySelector("#daily_returns").innerHTML = (daily_reward * user_share).toLocaleString() + " " + symbol;
     }
 }
 
@@ -216,26 +173,25 @@ async function updateBalance()
 {
     let pool_id = 0;
     let pool = document.querySelector("#staking_type").innerHTML
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
 
     if(pool == "wXEQ-ETH")
     {
-        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x631540a0f8908559f6c09f5bf1510e467f66715d") / 1e18).toLocaleString() + " wXEQ-ETH";
+        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, wxeqETHAddress) / 1e18).toLocaleString() + " " + symbol + "-ETH";
 
     } else if (pool == "wXEQ") {
 
-        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3") / 1e18).toLocaleString() + " wXEQ";
+        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, tokenAddress) / 1e18).toLocaleString() + " " + symbol;
 
 
     } else if(pool == "wXEQ-USDC")
     {
-        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x71fa26f268c7bc6083f131f39917d01248e66cf6") / 1e18).toLocaleString(undefined,
-            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";    }
+        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, wxeqUSDCAddress) / 1e18).toLocaleString(undefined,
+            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " " + symbol + "-USDC";    }
 }
 
 async function fetchApprovedCoins(user) {
 
-    return await erc20Contract.methods.allowance(user, "0x6550e728afaf5414952490e95b9586c5e8eb5b8c").call()
+    return await erc20Contract.methods.allowance(user, tokenAddress).call()
 }
 
 /**
@@ -244,37 +200,36 @@ async function fetchApprovedCoins(user) {
 async function fetchAccountData() {
 
   // Get a Web3 instance for the wallet
-  web3 = new Web3(provider);
-
-  console.log("Web3 instance is", web3);
-
-  // Get connected chain id from Ethereum node
-  const chainId = await web3.eth.getChainId();
-  // Load chain information over an HTTP API
-  const chainData = evmChains.getChain(chainId);
-
-  // Get list of accounts of the connected wallet
-  const accounts = await web3.eth.getAccounts();
-
-  // MetaMask does not give you all accounts, only the selected account
-  selectedAccount = accounts[0];
+  // web3 = new Web3(provider);
+  //
+  // console.log("Web3 instance is", web3);
+  //
+  // // Get connected chain id from Ethereum node
+  // const chainId = await web3.eth.getChainId();
+  // // Load chain information over an HTTP API
+  // const chainData = evmChains.getChain(chainId);
+  //
+  // // Get list of accounts of the connected wallet
+  // const accounts = await web3.eth.getAccounts();
+  //
+  // // MetaMask does not give you all accounts, only the selected account
+  // selectedAccount = accounts[0];
 
   // Display fully loaded UI for wallet data
   $("#prepare").hide()
   $("#connected").show();
-  document.querySelector("#network-name").innerHTML = chainData.name;
-  document.querySelector("#account").innerHTML = accounts[0]
+  // document.querySelector("#network-name").innerHTML = chainData.name;
+  document.querySelector("#account").innerHTML =selectedAccount
 
   let total_wxeq_deposited = await fetchTotalStakedAmount(0)
   let user_staked = await fetchStakedAccount(selectedAccount, 0);
-  document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " wXEQ";
+  document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " " + symbol;
   let reward = ((0.4840336 * .3) * 6526)
   let user_share = (user_staked /1e18)/(total_wxeq_deposited/1e18)
-  document.querySelector("#daily_returns").innerHTML = (reward * user_share).toLocaleString() + " wXEQ";
-  document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 0) / 1e18).toLocaleString() + " wXEQ";
-  erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
-  document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ";
-  document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3") / 1e18).toLocaleString() + " wXEQ"
+  document.querySelector("#daily_returns").innerHTML = ((reward * user_share) || 0).toLocaleString() + " " + symbol;
+  document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 0) / 1e18).toLocaleString() + " " + symbol;
+  document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " " + symbol;
+  document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, tokenAddress) / 1e18).toLocaleString() + " " + symbol
 
   var connected = document.querySelectorAll(".connected");
 
@@ -315,12 +270,91 @@ async function refreshAccountData() {
 async function onConnect() {
 
   console.log("Opening a dialog", web3Modal);
-  try {
-    provider = await web3Modal.connect();
-  } catch(e) {
-    console.log("Could not get a wallet connection", e);
-    return;
+  console.log("Initializing example");
+  console.log("WalletConnectProvider is", WalletConnectProvider);
+  console.log("window.web3 is", window.web3, "window.ethereum is", window.ethereum);
+
+  // Tell Web3modal what providers we have available.
+  // Built-in web browser provider (only one can exist as a time)
+  // like MetaMask, Brave or Opera is added automatically by Web3modal
+  const providerOptions = {
+    walletconnect: {
+      package: WalletConnectProvider, // required
+      options: {
+        infuraId: "079430f0746145d291bba904431ce803" // required
+      }
+    }
+  };
+
+  web3Modal = new Web3Modal({
+    cacheProvider: false, // optional
+    providerOptions, // required
+  });
+
+  if (!provider)
+  provider = await web3Modal.connect();
+
+  web3 = new Web3(provider)
+  const chainId = await web3.eth.getChainId();
+  const accounts = await web3.eth.getAccounts();
+  selectedAccount = accounts[0];
+  if (chainId == 1) {
+    const chainData = evmChains.getChain(chainId);
+    symbol = "wXEQ"
+    document.querySelector("#network-name").innerHTML = chainData.name;
+    uniswapContract = new web3.eth.Contract(uniswapContractAbi, "0x631540a0f8908559f6c09f5bf1510e467f66715d")
+    uniswapContract2 = new web3.eth.Contract(uniswapContractAbi, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
+    erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
+    tokenAddress = "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3"
+    wxeqETHAddress = "0x631540a0f8908559f6c09f5bf1510e467f66715d"
+    wxeqUSDCAddress = "0x71fa26f268c7bc6083f131f39917d01248e66cf6"
+    stakingAddress = "0x6550E728afaf5414952490E95B9586C5e8eB5b8c"
+    bridgeAddress = "0x0bC3F57c2FaF674561641e983aB1Ce7F928BDA7C"
+    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+    document.getElementById("wXEQETHStaking").style.display = "block"
+    document.getElementById("wXEQStaking").innerText = "wXEQ"
+    document.getElementById("wXEQUSDCStaking").innerText = "wXEQ-USDC"
+    document.getElementById("deposit_amount_name").innerText = "wXEQ Amount"
+    // document.getElementById("btn-primary").style.backgroundColor = "#0b5ed7"
+
+
+  } else {
+    symbol = "aXEQ"
+    document.querySelector("#network-name").innerHTML = "Avalanche";
+    uniswapContract = new web3.eth.Contract(uniswapContractAbi, "0x637ac79083bb712f7557e3abdab80035b9089108")
+    uniswapContract2 = new web3.eth.Contract(uniswapContractAbi, "0x637ac79083bb712f7557e3abdab80035b9089108")
+    erc20Contract = new web3.eth.Contract(ERC20ABI, "0xe2B99234b102486aD7F9eaDd51e70eFa8f964FDa")
+    tokenAddress = "0xe2B99234b102486aD7F9eaDd51e70eFa8f964FDa"
+    wxeqETHAddress = "0x637ac79083bb712f7557e3abdab80035b9089108"
+    wxeqUSDCAddress = "0x637ac79083bb712f7557e3abdab80035b9089108"
+    stakingAddress = "0x0f1ab924fbad4525578011b102604d3e2f11f9ef"
+    bridgeAddress = "0xf0988ddF64144e450Be37F908fA995C386dD0B30 "
+    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x0f1ab924fbad4525578011b102604d3e2f11f9ef")
+    document.getElementById("wXEQETHStaking").style.display = "none"
+    document.getElementById("wXEQStaking").innerText = "aXEQ"
+    document.getElementById("deposit_amount_name").innerText = "aXEQ Amount"
+    // document.getElementById("btn-primary").style.add = "#E41F20"
+
+
   }
+
+
+  let total_wxeq_deposited = await stakingContract.methods.getPoolTotalDeposited(0).call();
+  document.getElementById("swap_panel").style.display = "none"
+
+  $("check_swap_card").hide();
+  document.querySelector("#total_staked").innerHTML = (total_wxeq_deposited / 1e18).toLocaleString() + " " + symbol;
+
+  let reward_weight = (await stakingContract.methods.getPoolRewardWeight(0).call()) / 100
+
+  let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
+  console.log((((reward * reward_weight) * 6526 * 365) / (total_wxeq_deposited / 1e18) * 100) || 0)
+  document.querySelector("#apy").innerHTML = (((reward * reward_weight) * 6526 * 365) / (total_wxeq_deposited / 1e18) * 100).toLocaleString() + "%";
+
+  fetchBlockNumber()
+  fetchGasPrice()
+  setInterval(fetchBlockNumber, 10000)
+  setInterval(fetchGasPrice, 10000)
 
 
 
@@ -331,6 +365,7 @@ async function onConnect() {
 
   // Subscribe to chainId change
   provider.on("chainChanged", (chainId) => {
+    onConnect()
     fetchAccountData();
   });
 
@@ -402,7 +437,7 @@ async function onWXEQ()
         document.querySelector("#wXEQETHStaking").classList.remove('active')
         document.querySelector("#wXEQUSDCStaking").classList.remove('active')
         document.querySelector("#swaps").classList.remove('active')
-        document.querySelector("#staking_type").innerHTML = "wXEQ";
+        document.querySelector("#staking_type").innerHTML = symbol;
 
         let total_wxeq_deposited = await stakingContract.methods.getPoolTotalDeposited(0).call();
 
@@ -410,19 +445,18 @@ async function onWXEQ()
 
         let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
 
-        document.querySelector("#total_staked").innerHTML = (total_wxeq_deposited / 1e18).toLocaleString() + " wXEQ";
+        document.querySelector("#total_staked").innerHTML = (total_wxeq_deposited / 1e18).toLocaleString() + " " + symbol;
         document.querySelector("#apy").innerHTML = (((reward * reward_weight) * 6526 * 365) / (total_wxeq_deposited / 1e18) * 100).toLocaleString() + "%";
 
         let user_staked = await fetchStakedAccount(selectedAccount, 0);
         console.log(total_wxeq_deposited)
-        document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " wXEQ (" + ((user_staked / total_wxeq_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
-        document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_deposited/1e18))).toLocaleString() + " wXEQ";
-        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 0) / 1e18).toLocaleString() + " wXEQ";
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
-        document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ";
-        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3") / 1e18).toLocaleString() + " wXEQ";
-    
-   
+        document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + "   + symbol(" + ((user_staked / total_wxeq_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
+        document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_deposited/1e18))).toLocaleString() + " " + symbol;
+        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 0) / 1e18).toLocaleString() + " " + symbol;
+        document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " " + symbol;
+        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, tokenAddress) / 1e18).toLocaleString() + " " + symbol;
+
+
 
 }
 
@@ -437,7 +471,7 @@ async function onWXEQUSDC()
         document.querySelector("#wXEQETHStaking").classList.remove('active')
         document.querySelector("#wXEQUSDCStaking").classList.add('active')
         document.querySelector("#swaps").classList.remove('active')
-        document.querySelector("#staking_type").innerHTML = "wXEQ-USDC";
+        document.querySelector("#staking_type").innerHTML = "" + symbol+"-USDC";
 
         let uniswap_wxeq_usdc = await uniswapContract2.methods.getReserves().call()
 
@@ -448,24 +482,24 @@ async function onWXEQUSDC()
         let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
 
         document.querySelector("#total_staked").innerHTML = (total_wxeq_usdc_deposited / 1e18).toLocaleString(undefined,
-            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";
+            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " "+symbol+"-USDC";
 
         console.log(uniswap_wxeq_usdc)
-    
+
         document.querySelector("#apy").innerHTML = (((reward * reward_weight) * 6526 * 365) / (uniswap_wxeq_usdc.reserve0 / 1e18) * 100).toLocaleString() + "%";
 
         let user_staked = await fetchStakedAccount(selectedAccount, 2);
         document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString(undefined,
-            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC (" + ((user_staked / total_wxeq_usdc_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
+            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " "+symbol+"-USDC (" + ((user_staked / total_wxeq_usdc_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
 
-        document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_usdc_deposited/1e18))).toLocaleString() + " wXEQ";;
-        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 2) / 1e18).toLocaleString() + " wXEQ";
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
-        document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ-USDC";
-        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x71fa26f268c7bc6083f131f39917d01248e66cf6") / 1e18).toLocaleString(undefined,
-            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC"
+        document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_usdc_deposited/1e18))).toLocaleString() + " " + symbol;;
+        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 2) / 1e18).toLocaleString() + " " + symbol;
+        erc20Contract = new web3.eth.Contract(ERC20ABI, wxeqUSDCAddress)
+        document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " "+symbol+"-USDC";
+        document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, wxeqUSDCAddress) / 1e18).toLocaleString(undefined,
+            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " "+symbol+"-USDC"
 
-    
+
 }
 
 async function onWXEQETH()
@@ -480,43 +514,43 @@ async function onWXEQETH()
     document.querySelector("#wXEQETHStaking").classList.add('active')
     document.querySelector("#swaps").classList.remove('active')
     let total_wxeq_eth_deposited = await stakingContract.methods.getPoolTotalDeposited(1).call();
-  
+
     let uniswap_wxeq_reserve = await uniswapContract.methods.getReserves().call()
 
     let reward_weight = (await stakingContract.methods.getPoolRewardWeight(1).call()) / 100
 
     let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
-  
-    document.querySelector("#total_staked").innerHTML = (total_wxeq_eth_deposited / 1e18).toLocaleString() + " wXEQ-ETH";
-  
+
+    document.querySelector("#total_staked").innerHTML = (total_wxeq_eth_deposited / 1e18).toLocaleString() + " "+symbol+"-ETH";
+
     document.querySelector("#apy").innerHTML = (((reward * reward_weight) * 6526 * 365) / (uniswap_wxeq_reserve.reserve0 / 1e18) * 100).toLocaleString() + "%";
-  
-    document.querySelector("#staking_type").innerHTML = "wXEQ-ETH";
+
+    document.querySelector("#staking_type").innerHTML = ""+symbol+"-ETH";
 
     let user_staked = await fetchStakedAccount(selectedAccount, 1);
-    document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " wXEQ-ETH  (" + ((user_staked / total_wxeq_usdc_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
-    document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_eth_deposited/1e18))).toLocaleString() + " wXEQ";
-    document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 1) / 1e18).toLocaleString() + " wXEQ";
-    erc20Contract = new web3.eth.Contract(ERC20ABI, "0x631540a0f8908559f6c09f5bf1510e467f66715d")
-    document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ-ETH";
-    document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, "0x631540a0f8908559f6c09f5bf1510e467f66715d") / 1e18).toLocaleString() + " wXEQ-ETH";
+    document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " "+symbol+"-ETH  (" + ((user_staked / total_wxeq_usdc_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
+    document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_eth_deposited/1e18))).toLocaleString() + " " + symbol;
+    document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 1) / 1e18).toLocaleString() + " " + symbol;
+    erc20Contract = new web3.eth.Contract(ERC20ABI, wxeqETHAddress)
+    document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " "+symbol+"-ETH";
+    document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, wxeqETHAddress) / 1e18).toLocaleString() + " "+symbol+"-ETH";
 }
 
 async function onDeposit() {
     let pool_id = 0;
     let pool = document.querySelector("#staking_type").innerHTML
 
-    if(pool == "wXEQ-ETH")
+    if(pool == symbol+"-ETH")
     {
         pool_id = 1
-    } else if (pool == "wXEQ") {
+    } else if (pool == symbol+"") {
         pool_id = 0
-    } else if(pool == "wXEQ-USDC")
+    } else if(pool == symbol+"-USDC")
     {
         pool_id = 2
     }
 
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+    stakingContract = new web3.eth.Contract(stakingContractAbi, stakingAddress)
 
     let amountString = document.querySelector("#amount_deposit").value
     let amount = web3.utils.toWei(amountString, 'ether')
@@ -525,18 +559,18 @@ async function onDeposit() {
 
     if (pool_id == 0)
     {
-        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 0) / 1e18).toLocaleString() + " wXEQ";
+        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 0) / 1e18).toLocaleString() + " " + symbol;
     }
 
     if (pool_id == 1)
     {
-        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 1) / 1e18).toLocaleString() + " wXEQ-ETH";
+        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 1) / 1e18).toLocaleString() + " "+symbol+"-ETH";
     }
 
     if (pool_id == 2)
     {
         document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 2) / 1e18).toLocaleString(undefined,
-            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";
+            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " "+symbol+"-USDC";
     }
 
 }
@@ -545,34 +579,34 @@ async function onClaim() {
     let pool_id = 0;
     let pool = document.querySelector("#staking_type").innerHTML
 
-    if(pool == "wXEQ-ETH")
+    if(pool == symbol+"-ETH")
     {
         pool_id = 1
-    } else if (pool == "wXEQ") {
+    } else if (pool == symbol+"") {
         pool_id = 0
-    } else if(pool == "wXEQ-USDC")
+    } else if(pool == symbol+"-USDC")
     {
         pool_id = 2
     }
 
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+    stakingContract = new web3.eth.Contract(stakingContractAbi, stakingAddress)
 
     let staking_tx = await stakingContract.methods.claim(pool_id).send({from:selectedAccount});
 
     if (pool_id == 0)
     {
-        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 0) / 1e18).toLocaleString() + " wXEQ";
-    } 
+        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 0) / 1e18).toLocaleString() + " " + symbol;
+    }
 
     if (pool_id == 1)
     {
-        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 1) / 1e18).toLocaleString() + " wXEQ";
-    } 
+        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 1) / 1e18).toLocaleString() + " " + symbol;
+    }
 
     if (pool_id == 2)
     {
-        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 2) / 1e18).toLocaleString() + " wXEQ";
-    } 
+        document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 2) / 1e18).toLocaleString() + " " + symbol;
+    }
 }
 
 async function onWithdraw() {
@@ -580,17 +614,17 @@ async function onWithdraw() {
     let pool_id = 0;
     let pool = document.querySelector("#staking_type").innerHTML
 
-    if(pool == "wXEQ-ETH")
+    if(pool == symbol + "-ETH")
     {
         pool_id = 1
-    } else if (pool == "wXEQ") {
+    } else if (pool == symbol + "") {
         pool_id = 0
-    } else if(pool == "wXEQ-USDC")
+    } else if(pool == symbol + "-USDC")
     {
         pool_id = 2
     }
 
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+    stakingContract = new web3.eth.Contract(stakingContractAbi, stakingAddress)
 
     let amountString = document.querySelector("#amount_withdraw").value
     let amount = web3.utils.toWei(amountString, 'ether')
@@ -599,17 +633,17 @@ async function onWithdraw() {
 
     if (pool_id == 0)
     {
-        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 0) / 1e18).toLocaleString() + " wXEQ";
+        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 0) / 1e18).toLocaleString() + " " + symbol;
     }
 
     if (pool_id == 1)
     {
-        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 1) / 1e18).toLocaleString() + " wXEQ-ETH";
+        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 1) / 1e18).toLocaleString() + " "+symbol+"-ETH";
     }
 
     if (pool_id == 2)
     {
-        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 2) / 1e18).toLocaleString() + " wXEQ-USDC";
+        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 2) / 1e18).toLocaleString() + " "+symbol+"-USDC";
     }
 
 }
@@ -618,16 +652,16 @@ $("#approve").click(async function () {
     let pool_id = 0;
     let pool = document.querySelector("#staking_type").innerHTML
 
-    if(pool == "wXEQ-ETH")
+    if(pool == symbol + "-ETH")
     {
         pool_id = 1
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x631540a0f8908559f6c09f5bf1510e467f66715d")
-    } else if (pool == "wXEQ") {
+        erc20Contract = new web3.eth.Contract(ERC20ABI, wxeqETHAddress)
+    } else if (pool == symbol + "") {
         pool_id = 0
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
-    } else if(pool == "wXEQ-USDC")
+        erc20Contract = new web3.eth.Contract(ERC20ABI, tokenAddress)
+    } else if(pool == symbol + "-USDC")
     {
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
+        erc20Contract = new web3.eth.Contract(ERC20ABI, wxeqUSDCAddress)
         pool_id = 2
     }
 
@@ -636,21 +670,21 @@ $("#approve").click(async function () {
 
     console.log(amount)
 
-    let staking_tx = await erc20Contract.methods.approve("0x6550e728afaf5414952490e95b9586c5e8eb5b8c", amount).send({from:selectedAccount})
+    let staking_tx = await erc20Contract.methods.approve(stakingAddress, amount).send({from:selectedAccount})
 
     if (pool_id == 0)
     {
-        document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ";
+        document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " " + symbol;
         $("#deposit").show();
     } else if (pool_id == 1)
     {
-        document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ-ETH";
+        document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " "+symbol+"-ETH";
         $("#deposit").show();
     }
 
     if (pool_id == 2)
     {
-        document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " wXEQ-USDC";
+        document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " "+symbol+"-USDC";
         $("#deposit").show();
     }
 })
@@ -663,17 +697,17 @@ async function onDepositModal() {
     if(pool == "wXEQ-ETH")
     {
         pool_id = 1
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x631540a0f8908559f6c09f5bf1510e467f66715d")
+        erc20Contract = new web3.eth.Contract(ERC20ABI, wxeqETHAddress)
     } else if (pool == "wXEQ") {
         pool_id = 0
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
+        erc20Contract = new web3.eth.Contract(ERC20ABI, tokenAddress)
     } else if(pool == "wXEQ-USDC")
     {
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
+        erc20Contract = new web3.eth.Contract(ERC20ABI, wxeqUSDCAddress)
         pool_id = 2
     }
 
-    if  ((await fetchApprovedCoins(selectedAccount) / 1e18) > 0) 
+    if  ((await fetchApprovedCoins(selectedAccount) / 1e18) > 0)
     {
         console.log("Have coins approved!")
         $("#approve").hide();
@@ -722,7 +756,7 @@ $("#check_status").click(async function(){
 
     $("#warning_text").hide()
 
-    let bridge_contract = new web3.eth.Contract(bridgeABI, "0x0bC3F57c2FaF674561641e983aB1Ce7F928BDA7C")
+    let bridge_contract = new web3.eth.Contract(bridgeABI, bridgeAddress)
 
 
     let tx_hash = $("#xeq_swap_transaction_hash").val()
@@ -753,7 +787,7 @@ $("#check_status").click(async function(){
 
 $("#claim_wxeq_swap").click(async function(){
 
-    let bridge_contract = new web3.eth.Contract(bridgeABI, "0x0bC3F57c2FaF674561641e983aB1Ce7F928BDA7C")
+    let bridge_contract = new web3.eth.Contract(bridgeABI, bridgeAddress)
 
     let tx_hash = $("#xeq_swap_transaction_hash").val()
 
@@ -775,9 +809,9 @@ $("#register_swap").click(async function(){
 })
 
 $("#approve_swap").click(async function(){
-    erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
+    erc20Contract = new web3.eth.Contract(ERC20ABI, tokenAddress)
 
-    let approved_coins = await erc20Contract.methods.allowance(selectedAccount, "0x0bc3f57c2faf674561641e983ab1ce7f928bda7c").call()
+    let approved_coins = await erc20Contract.methods.allowance(selectedAccount, bridgeAddress).call()
 
 
     let amountString = $("#swap_approve_amount").val()
@@ -787,9 +821,9 @@ $("#approve_swap").click(async function(){
     {
         $("#swap_approve").hide()
         $("#finish_swap").show()
-    } 
+    }
 
-    let approve_tx = await erc20Contract.methods.approve("0x0bc3f57c2faf674561641e983ab1ce7f928bda7c", amount).send({from:selectedAccount})
+    let approve_tx = await erc20Contract.methods.approve(bridgeAddress, amount).send({from:selectedAccount})
     console.log(approve_tx)
     if(approve_tx)
     {
@@ -800,7 +834,7 @@ $("#approve_swap").click(async function(){
 })
 
 $("#finish_swap").click(async function(){
-    let bridge_contract = new web3.eth.Contract(bridgeABI, "0x0bC3F57c2FaF674561641e983aB1Ce7F928BDA7C")
+    let bridge_contract = new web3.eth.Contract(bridgeABI, bridgeAddress)
     let wxeq_address = $("#finished_wxeq_swap_address").val()
     let wxeq_amount = $("#finished_wxeq_swap_amount").val()
 
@@ -851,20 +885,20 @@ $("#new_deposit_button").click(async function(){
     let pool = document.querySelector("#staking_type").innerHTML
 
 
-    if(pool == "wXEQ-ETH")
+    if(pool == symbol+"-ETH")
     {
         pool_id = 1
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x631540a0f8908559f6c09f5bf1510e467f66715d")
-    } else if (pool == "wXEQ") {
+        erc20Contract = new web3.eth.Contract(ERC20ABI, wxeqETHAddress)
+    } else if (pool == symbol+"") {
         pool_id = 0
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
-    } else if(pool == "wXEQ-USDC")
+        erc20Contract = new web3.eth.Contract(ERC20ABI, tokenAddress)
+    } else if(pool == symbol+"-USDC")
     {
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
+        erc20Contract = new web3.eth.Contract(ERC20ABI, wxeqUSDCAddress)
         pool_id = 2
     }
 
-    let approved_coins = await erc20Contract.methods.allowance(selectedAccount, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c").call()
+    let approved_coins = await erc20Contract.methods.allowance(selectedAccount, stakingAddress).call()
 
     let amountString = $("#deposit_withdraw_amount").val()
     let amount = web3.utils.toWei(amountString, 'ether')
@@ -890,17 +924,17 @@ $("#new_withdrawal_button").click(async function(){
     let pool_id = 0;
     let pool = document.querySelector("#staking_type").innerHTML
 
-    if(pool == "wXEQ-ETH")
+    if(pool == symbol +"-ETH")
     {
         pool_id = 1
-    } else if (pool == "wXEQ") {
+    } else if (pool == symbol +"") {
         pool_id = 0
-    } else if(pool == "wXEQ-USDC")
+    } else if(pool == symbol +"-USDC")
     {
         pool_id = 2
     }
 
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+    stakingContract = new web3.eth.Contract(stakingContractAbi, stakingAddress)
 
     let amountString = $("#deposit_withdraw_amount").val()
     let amount = web3.utils.toWei(amountString, 'ether')
@@ -918,17 +952,17 @@ $("#new_withdrawal_button").click(async function(){
 
         if (pool_id == 0)
         {
-            document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 0) / 1e18).toLocaleString() + " wXEQ";
+            document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 0) / 1e18).toLocaleString() + " " + symbol;
         }
 
         if (pool_id == 1)
         {
-            document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 1) / 1e18).toLocaleString() + " wXEQ-ETH";
+            document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 1) / 1e18).toLocaleString() + " "+symbol+"-ETH";
         }
 
         if (pool_id == 2)
         {
-            document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 2) / 1e18).toLocaleString() + " wXEQ-USDC";
+            document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 2) / 1e18).toLocaleString() + " "+symbol+"-USDC";
         }
     }
 
@@ -942,13 +976,13 @@ $("#new_approve_button").click(async function(){
     if(pool == "wXEQ-ETH")
     {
         pool_id = 1
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x631540a0f8908559f6c09f5bf1510e467f66715d")
+        erc20Contract = new web3.eth.Contract(ERC20ABI, wxeqETHAddress)
     } else if (pool == "wXEQ") {
         pool_id = 0
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
+        erc20Contract = new web3.eth.Contract(ERC20ABI, tokenAddress)
     } else if(pool == "wXEQ-USDC")
     {
-        erc20Contract = new web3.eth.Contract(ERC20ABI, "0x71fa26f268c7bc6083f131f39917d01248e66cf6")
+        erc20Contract = new web3.eth.Contract(ERC20ABI, wxeqUSDCAddress)
         pool_id = 2
     }
     console.log(pool_id)
@@ -958,10 +992,10 @@ $("#new_approve_button").click(async function(){
 
     console.log(amount)
 
-    let approve_tx = await erc20Contract.methods.approve("0x6550E728afaf5414952490E95B9586C5e8eB5b8c", amount).send({from:selectedAccount})
+    let approve_tx = await erc20Contract.methods.approve(stakingAddress, amount).send({from:selectedAccount})
     if(approve_tx)
     {
-        let approved_coins = await erc20Contract.methods.allowance(selectedAccount, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c").call()
+        let approved_coins = await erc20Contract.methods.allowance(selectedAccount, stakingAddress).call()
 
         if(approved_coins > 0)
         {
@@ -976,19 +1010,19 @@ $("#final_new_deposit_button").click(async function(){
     let pool_id = 0;
     let pool = document.querySelector("#staking_type").innerHTML
 
-    if(pool == "wXEQ-ETH")
+    if(pool == symbol+"-ETH")
     {
         pool_id = 1
-    } else if (pool == "wXEQ") {
+    } else if (pool == symbol+"") {
         pool_id = 0
-    } else if(pool == "wXEQ-USDC")
+    } else if(pool == symbol+"-USDC")
     {
         pool_id = 2
     }
 
     console.log(pool_id)
 
-    stakingContract = new web3.eth.Contract(stakingContractAbi, "0x6550E728afaf5414952490E95B9586C5e8eB5b8c")
+    stakingContract = new web3.eth.Contract(stakingContractAbi, stakingAddress)
 
     let amountString = $("#deposit_withdraw_amount").val()
     let amount = web3.utils.toWei(amountString, 'ether')
@@ -997,18 +1031,18 @@ $("#final_new_deposit_button").click(async function(){
 
     if (pool_id == 0)
     {
-        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 0) / 1e18).toLocaleString() + " wXEQ";
+        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 0) / 1e18).toLocaleString() + " " + symbol;
     }
 
     if (pool_id == 1)
     {
-        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 1) / 1e18).toLocaleString() + " wXEQ-ETH";
+        document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 1) / 1e18).toLocaleString() + " "+symbol+"-ETH";
     }
 
     if (pool_id == 2)
     {
         document.querySelector("#user_staked").innerHTML = (await fetchStakedAccount(selectedAccount, 2) / 1e18).toLocaleString(undefined,
-            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " wXEQ-USDC";
+            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " "+symbol+"-USDC";
     }
 
 })
@@ -1017,7 +1051,7 @@ $("#final_new_deposit_button").click(async function(){
 $("#btn-disconnect").click(function(){
     $("#user_panel").hide()
 
-    
+
 })
 
 
