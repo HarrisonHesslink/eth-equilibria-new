@@ -566,7 +566,7 @@ async function onWXEQETH()
     document.querySelector("#staking_type").innerHTML = ""+symbol+"-ETH";
 
     let user_staked = await fetchStakedAccount(selectedAccount, 1);
-    document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " "+symbol+"-ETH  (" + ((user_staked / total_wxeq_usdc_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
+    document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " "+symbol+"-ETH  (" + ((user_staked / total_wxeq_eth_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
     document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_eth_deposited/1e18))).toLocaleString() + " " + symbol;
     document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 1) / 1e18).toLocaleString() + " " + symbol;
     erc20Contract = new web3.eth.Contract(ERC20ABI, wxeqETHAddress)
