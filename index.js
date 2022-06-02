@@ -323,7 +323,6 @@ async function onConnect() {
   console.log("WalletConnectProvider is", WalletConnectProvider);
   console.log("window.web3 is", window.web3, "window.ethereum is", window.ethereum);
   $("#gas_symbol").show()
-
   // Tell Web3modal what providers we have available.
   // Built-in web browser provider (only one can exist as a time)
   // like MetaMask, Brave or Opera is added automatically by Web3modal
@@ -501,6 +500,7 @@ async function onWXEQ()
         document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " " + symbol;
         document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, tokenAddress) / 1e18).toLocaleString() + " " + symbol;
 
+        $('#deposit_amount_name').html("wXEQ Amount")
 
 
 }
@@ -541,6 +541,7 @@ async function onWXEQUSDC()
         document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, wxeqUSDCAddress) / 1e18).toLocaleString(undefined,
             {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " "+symbol+"-USDC"
 
+        $('#deposit_amount_name').html("wXEQ-USDC Amount")
 
 }
 
@@ -573,6 +574,8 @@ async function onWXEQETH()
     erc20Contract = new web3.eth.Contract(ERC20ABI, wxeqETHAddress)
     document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " "+symbol+"-ETH";
     document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, wxeqETHAddress) / 1e18).toLocaleString() + " "+symbol+"-ETH";
+    $('#deposit_amount_name').html("wXEQ-ETH Amount")
+
 }
 
 async function onDeposit() {
