@@ -494,7 +494,7 @@ async function onWXEQ()
 
         let user_staked = await fetchStakedAccount(selectedAccount, 0);
         console.log(total_wxeq_deposited)
-        document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + "   + symbol(" + ((user_staked / total_wxeq_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
+        document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString() + " "  + symbol + "(" + ((user_staked / total_wxeq_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
         document.querySelector("#daily_returns").innerHTML = (((reward * reward_weight) * 6526) * ((user_staked /1e18)/(total_wxeq_deposited/1e18))).toLocaleString() + " " + symbol;
         document.querySelector("#pending_claim").innerHTML = (await fetchPending(selectedAccount, 0) / 1e18).toLocaleString() + " " + symbol;
         document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " " + symbol;
