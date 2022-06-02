@@ -392,7 +392,6 @@ async function onConnect() {
   document.getElementById("swap_panel").style.display = "none"
 
   $("check_swap_card").hide();
-  document.querySelector("#total_staked").innerHTML = (total_wxeq_deposited / 1e18).toLocaleString() + " " + symbol;
 
   let reward_weight = (await stakingContract.methods.getPoolRewardWeight(0).call()) / 100
 
@@ -494,7 +493,6 @@ async function onWXEQ()
 
         let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
 
-        document.querySelector("#total_staked").innerHTML = (total_wxeq_deposited / 1e18).toLocaleString() + " " + symbol;
         document.querySelector("#apy").innerHTML = (((reward * reward_weight) * 6526 * 365) / (total_wxeq_deposited / 1e18) * 100).toLocaleString() + "%";
 
         let user_staked = await fetchStakedAccount(selectedAccount, 0);
@@ -530,8 +528,6 @@ async function onWXEQUSDC()
 
         let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
 
-        document.querySelector("#total_staked").innerHTML = (total_wxeq_usdc_deposited / 1e18).toLocaleString(undefined,
-            {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " "+symbol+"-USDC";
 
         console.log(uniswap_wxeq_usdc)
 
@@ -570,7 +566,6 @@ async function onWXEQETH()
 
     let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
 
-    document.querySelector("#total_staked").innerHTML = (total_wxeq_eth_deposited / 1e18).toLocaleString() + " "+symbol+"-ETH";
 
     document.querySelector("#apy").innerHTML = (((reward * reward_weight) * 6526 * 365) / (uniswap_wxeq_reserve.reserve0 / 1e18) * 100).toLocaleString() + "%";
 
