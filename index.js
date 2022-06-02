@@ -188,8 +188,8 @@ async function updateDailyReward() {
     } else if(pool == symbol + "-USDC")
     {
       console.log("test 2")
-        let total_wxeq_usdc_deposited = await fetchTotalStakedAmount(2)
-        let reward_weight = (await stakingContract.methods.getPoolRewardWeight(2).call()) / 100
+        let total_wxeq_usdc_deposited = await fetchTotalStakedAmount(symbol == "aXEQ" ? 1 : 2)
+        let reward_weight = (await stakingContract.methods.getPoolRewardWeight(symbol == "aXEQ" ? 1 : 2).call()) / 100
 
         if (total_wxeq_usdc_deposited == "0")
         {
@@ -198,7 +198,7 @@ async function updateDailyReward() {
 
         console.log(total_wxeq_usdc_deposited)
 
-        let user_staked = await fetchStakedAccount(selectedAccount, 2);
+        let user_staked = await fetchStakedAccount(selectedAccount, symbol == "aXEQ" ? 1 : 2);
         if (user_staked == "0")
         {
             user_staked = 0
