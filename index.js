@@ -43,7 +43,7 @@ let bridgeAddress = ""
  * Setup the orchestra
  */
 async function init() {
-
+getPooledBalances()
 }
 
 async function fetchBlockNumber() {
@@ -80,6 +80,47 @@ async function fetchBalance(user, token)
 }
 
 async function checkTransaction(tx_hash){
+
+}
+
+async function getPooledBalances() {
+
+  let _provider = new Web3.providers.HttpProvider("https://mainnet.infura.io/v3/079430f0746145d291bba904431ce803")
+  let _web3 = new Web3(_provider)
+
+  let eth_balances
+  let usdc_balances
+  let xeq_balances
+
+  let token = new _web3.eth.Contract(ERC20ABI, "0x4a5B3D0004454988C50e8dE1bCFC921EE995ADe3")
+  let eth_xeqETH_xeq = await token.methods.balanceOf("0x631540a0f8908559f6c09f5bf1510e467f66715d").call()
+  let eth_xeqUSDC_xeq = await token.methods.balanceOf("0x71fa26f268c7bc6083f131f39917d01248e66cf6").call()
+  xeq_balances = BigInt(eth_xeqETH_xeq) + BigInt(eth_xeqUSDC_xeq)
+
+  token = new _web3.eth.Contract(ERC20ABI, "0xC02aaA39b223FE8D0A0e5C4F27eAD9083C756Cc2")
+  let eth_xeqETH_eth = await token.methods.balanceOf("0x631540a0F8908559F6C09f5Bf1510e467F66715d").call()
+  eth_balances = BigInt(eth_xeqETH_eth)
+
+  token = new _web3.eth.Contract(ERC20ABI, "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48")
+  let eth_xeqUSDC_usdc = await token.methods.balanceOf("0x71FA26f268c7bc6083F131F39917D01248E66Cf6").call()
+  usdc_balances = BigInt(eth_xeqUSDC_usdc)
+
+  _provider = new Web3.providers.HttpProvider("https://api.avax.network/ext/bc/C/rpc")
+  _web3 = new Web3(_provider)
+
+  token = new _web3.eth.Contract(ERC20ABI, "0xe2B99234b102486aD7F9eaDd51e70eFa8f964FDa")
+  let avax_xeqUSDC_xeq = await token.methods.balanceOf("0x637Ac79083bb712f7557E3ABdaB80035b9089108").call()
+  xeq_balances += BigInt(avax_xeqUSDC_xeq)
+
+  token = new _web3.eth.Contract(ERC20ABI, "0xB97EF9Ef8734C71904D8002F8b6Bc66Dd9c48a6E")
+  let avax_xeqUSDC_usdc = await token.methods.balanceOf("0x637Ac79083bb712f7557E3ABdaB80035b9089108").call()
+  usdc_balances += avax_xeqUSDC_usdc
+
+  eth_balances = Number(BigInt(eth_balances) / BigInt(10**14)) / 10**4
+  usdc_balances = Number(BigInt(usdc_balances) / BigInt(10**12)) / 10**2
+  xeq_balances = Number(BigInt(xeq_balances) / BigInt(10**14)) / 10**4
+
+  console.log(eth_balances.toLocaleString() + " eth", usdc_balances.toLocaleString() + " usdc", xeq_balances.toLocaleString() + " xeq")
 
 }
 
