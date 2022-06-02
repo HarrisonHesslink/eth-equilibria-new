@@ -525,9 +525,9 @@ async function onWXEQUSDC()
 
         let uniswap_wxeq_usdc = await uniswapContract2.methods.getReserves().call()
 
-        let total_wxeq_usdc_deposited = await stakingContract.methods.getPoolTotalDeposited(2).call();
+        let total_wxeq_usdc_deposited = await stakingContract.methods.getPoolTotalDeposited(symbol == "aXEQ" ? 1 : 2).call();
 
-        let reward_weight = (await stakingContract.methods.getPoolRewardWeight(2).call()) / 100
+        let reward_weight = (await stakingContract.methods.getPoolRewardWeight(symbol == "aXEQ" ? 1 : 2).call()) / 100
 
         let reward = (await stakingContract.methods.rewardRate().call()) / 1e18
 
