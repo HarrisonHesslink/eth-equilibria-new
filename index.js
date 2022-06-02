@@ -44,6 +44,8 @@ let bridgeAddress = ""
  */
 async function init() {
 getPooledBalances()
+$("#staking_type").hide()
+$("#gas_symbol").hide()
 }
 
 async function fetchBlockNumber() {
@@ -124,6 +126,11 @@ async function getPooledBalances() {
 
   console.log(eth_balances.toLocaleString() + " eth", usdc_balances.toLocaleString() + " usdc", xeq_balances.toLocaleString() + " xeq")
 
+    $("#total_staked_xeq").html(xeq_balances.toLocaleString() + " " + symbol)
+    $("#total_staked_eth").html(eth_balances.toLocaleString() + " ETH")
+    $("#total_staked_usdc").html(usdc_balances.toLocaleString() + " USDC")
+
+
 }
 
 async function updatePending() {
@@ -149,7 +156,6 @@ async function updateDailyReward() {
 
     let pool_id = 0;
     let pool = document.querySelector("#staking_type").innerHTML
-  console.log(pool)
 
     if(pool == symbol + "-ETH")
     {
