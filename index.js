@@ -373,7 +373,7 @@ async function onConnect() {
   } else {
     symbol = "aXEQ"
     document.querySelector("#network-name").innerHTML = "Avalanche";
-    uniswapContract = new web3.eth.Contract(uniswapContractAbi, "0x60ae616a2155ee3d9a68541ba4544862310933d4")
+    uniswapContract = new web3.eth.Contract(uniswapContractAbi, "0x637Ac79083bb712f7557E3ABdaB80035b9089108")
     uniswapContract2 = new web3.eth.Contract(uniswapContractAbi, "0x637ac79083bb712f7557e3abdab80035b9089108")
     erc20Contract = new web3.eth.Contract(ERC20ABI, "0xe2B99234b102486aD7F9eaDd51e70eFa8f964FDa")
     tokenAddress = "0xe2B99234b102486aD7F9eaDd51e70eFa8f964FDa"
@@ -389,7 +389,7 @@ async function onConnect() {
     $("#register_wxeq_string").html("Register aXEQ->XEQ")
     $("#wxeq_swap_amount").html("aXEQ Amount")
     $("#claim_wxeq_string").html("Claim XEQ->aXEQ")
-    document.getElementById("btn-primary").style.add = "#E41F20"
+    // document.getElementById("btn-primary").style.add = "#E41F20"
   }
 
 
@@ -534,8 +534,7 @@ async function onWXEQUSDC()
 
         console.log(uniswap_wxeq_usdc)
 
-
-        let user_staked = await fetchStakedAccount(selectedAccount, 2);
+        let user_staked = await fetchStakedAccount(selectedAccount, symbol == "aXEQ" ? 1 : 2);
         document.querySelector("#user_staked").innerHTML = (user_staked/1e18).toLocaleString(undefined,
             {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " "+symbol+"-USDC (" + ((user_staked / total_wxeq_usdc_deposited).toFixed(2).toLocaleString() * 100)+ "%)";
 
