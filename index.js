@@ -373,12 +373,12 @@ async function onConnect() {
   } else {
     symbol = "aXEQ"
     document.querySelector("#network-name").innerHTML = "Avalanche";
-    uniswapContract = new web3.eth.Contract(uniswapContractAbi, "0x637ac79083bb712f7557e3abdab80035b9089108")
+    uniswapContract = new web3.eth.Contract(uniswapContractAbi, "0x60ae616a2155ee3d9a68541ba4544862310933d4")
     uniswapContract2 = new web3.eth.Contract(uniswapContractAbi, "0x637ac79083bb712f7557e3abdab80035b9089108")
     erc20Contract = new web3.eth.Contract(ERC20ABI, "0xe2B99234b102486aD7F9eaDd51e70eFa8f964FDa")
     tokenAddress = "0xe2B99234b102486aD7F9eaDd51e70eFa8f964FDa"
     wxeqETHAddress = "0x637ac79083bb712f7557e3abdab80035b9089108"
-    wxeqUSDCAddress = "0x637ac79083bb712f7557e3abdab80035b9089108"
+    wxeqUSDCAddress = "0x637Ac79083bb712f7557E3ABdaB80035b9089108"
     stakingAddress = "0x0f1ab924fbad4525578011b102604d3e2f11f9ef"
     bridgeAddress = "0xf0988ddF64144e450Be37F908fA995C386dD0B30 "
     stakingContract = new web3.eth.Contract(stakingContractAbi, "0x0f1ab924fbad4525578011b102604d3e2f11f9ef")
@@ -389,7 +389,7 @@ async function onConnect() {
     $("#register_wxeq_string").html("Register aXEQ->XEQ")
     $("#wxeq_swap_amount").html("aXEQ Amount")
     $("#claim_wxeq_string").html("Claim XEQ->aXEQ")
-    // document.getElementById("btn-primary").style.add = "#E41F20"
+    document.getElementById("btn-primary").style.add = "#E41F20"
   }
 
 
