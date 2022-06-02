@@ -382,9 +382,8 @@ async function onConnect() {
     document.getElementById("wXEQETHStaking").style.display = "none"
     document.getElementById("wXEQStaking").innerText = "aXEQ"
     document.getElementById("deposit_amount_name").innerText = "aXEQ Amount"
+    $("#wXEQUSDCStaking").html("AXEQ-USDC")
     // document.getElementById("btn-primary").style.add = "#E41F20"
-
-
   }
 
 
@@ -500,7 +499,7 @@ async function onWXEQ()
         document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " " + symbol;
         document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, tokenAddress) / 1e18).toLocaleString() + " " + symbol;
 
-        $('#deposit_amount_name').html("wXEQ Amount")
+        $('#deposit_amount_name').html(symbol + " Amount")
 
 
 }
@@ -541,7 +540,7 @@ async function onWXEQUSDC()
         document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, wxeqUSDCAddress) / 1e18).toLocaleString(undefined,
             {'minimumFractionDigits':2,'maximumFractionDigits':8}) + " "+symbol+"-USDC"
 
-        $('#deposit_amount_name').html("wXEQ-USDC Amount")
+        $('#deposit_amount_name').html(symbol + "-USDC Amount")
 
 }
 
@@ -574,7 +573,7 @@ async function onWXEQETH()
     erc20Contract = new web3.eth.Contract(ERC20ABI, wxeqETHAddress)
     document.querySelector("#approved_for_staking").innerHTML = (await fetchApprovedCoins(selectedAccount) / 1e18).toLocaleString() + " "+symbol+"-ETH";
     document.querySelector("#user_balance").innerHTML = (await fetchBalance(selectedAccount, wxeqETHAddress) / 1e18).toLocaleString() + " "+symbol+"-ETH";
-    $('#deposit_amount_name').html("wXEQ-ETH Amount")
+    $('#deposit_amount_name').html(symbol + "-ETH Amount")
 
 }
 
