@@ -1,442 +1,457 @@
 <html>
 
-    <header>
-
-    <!-- Font Awesome -->
-    <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
-    rel="stylesheet"
-    />
-    <!-- Google Fonts -->
-    <link
-    href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
-    rel="stylesheet"
-    />
-    <!-- MDB -->
-    <link
-    href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.1/mdb.dark.min.css"
-    rel="stylesheet"
-    />
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
-
-    <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
-    </header>
-
-    <style>
-        body {
-            background-color: rgb(13,15,25);
-        }
-
-        nav {
-            background-color: #c5e0ff00;
-        }
-
-        .md-form.md-outline label {
-          z-index: 3;
-        }
-
-        .header-text{
-            color: #c5e0ff !important;
-        }
-
-        .network-text{
-            color: rgb(173, 173, 173) !important;
-        }
-
-        p {
-          color: white;
-        }
-
-        h3 {
-          color :white;
-        }
-
-        h5 {
-          color: white
-        }
-
-        .bkgdred {
-            background-color: #E41F20;
-        }
-
-        .bkgdblue {
-            background-color: #0b5ed7;
-        }
-
-        h1 {
-          color: white
-        }
-
-        .gas-text{
-            color: rgb(46, 243, 168)!important;
-        }
-        .input-group.md-form.form-sm.form-3 input {
-            border: 1px solid #bdbdbd;
-            border-top-right-radius: 0.25rem;
-            border-bottom-right-radius: 0.25rem;
-        }
-
-      .input-group.md-form.form-sm.form-3 input[type=text]:focus:not([readonly]).amber-border  {
-          border: 1px solid #ffca28;
-          box-shadow: none;
-      }
-
-        .card {
-            margin-top: 2rem;
-            float: left;
-            width: 100%;
-            padding: 5rem;
-            margin-bottom: 2rem;
-            border: 0;
-            margin: 0 auto; /* Added */
-            float: none; /* Added */
-            margin-bottom: 10px; /* Added */
-            margin-top: 10rem;
-            background-color: rgb(22,21,34);
-        }
-        .card-body{
-            background-color: rgb(32,34,49);
-            margin-top: 2rem;
-            margin-bottom: 2rem;
-        }
-    </style>
-
-    <body>
-
-        <div class="container-fluid h-100">
-
-                <nav class="navbar navbar-expand-lg">
-                    <div class="container-fluid">
-                        <img
-                        src="xeq_logo_with_padding.png"
-                        height="80"
-                        alt="wXEQ Portal"
-                      />
-
-                      <div class="">
-                        <div id="prepare" >
-                            <button class="btn btn-primary navbar-brand" id="btn-connect">
-                              Connect wallet
-                            </button>
-                        </div>
-                        <div id="connected" style="display: none;">
-
-                            <button class="btn btn-primary px-3 me-2" id="btn-disconnect">
-                              Disconnect wallet
-                            </button>
-
-                            </div>
-                        </div>
-
-
-                    </div>
-                  </nav>
-
-
-            <div class="row align-items-center">
-              <div class="col-lg-4 mx-auto" style="display:flex;">
-                <div class="card">
-                  <div><h1>Staking Farms</h1></div>
-                    <div>
-                        <ul class="nav nav-pills mb-3" id="pills-tab2" role="tablist">
-                            <li class="nav-item" role="presentation">
-                              <button
-                                class="nav-link btn active"
-                                id="wXEQStaking"
-                                type="button"
-                              >
-                                wXEQ
-                              </button>
-                            </li>
-                            <li class="nav-item" role="presentation" >
-                                <button
-                                  class="btn nav-link"
-                                  id="wXEQETHStaking"
-                                  type="button"
-                                >
-                                  wXEQ-ETH
-                                </button>
-                              </li>
-                            <li class="nav-item" role="presentation">
-                              <button
-                                class="btn nav-link btn"
-                                id="wXEQUSDCStaking"
-                                type="button"
-                              >
-                                wXEQ-USDC
-                              </button>
-                            </li>
-                          </ul>
-                          <!-- Pills navs -->
-                      </div>
-                      <div>
-
-
-                      </div>
-
-                    <section
-                    class="d-flex justify-content-center justify-content-lg-between p-4"
-                  >
-                  <div><h3 id="staking_type">wXEQ</h3></div>
-                  <div>
-                    <div id="network">
-                      <span id="gas_symbol">                        <svg width="18" height="20" viewBox="0 0 18 20" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M13.5215 0.618164L12.6818 1.57302L15.933 4.37393V13.2435C15.9114 13.6891 15.5239 14.0498 15.0502 14.0286C14.6196 14.0074 14.2751 13.6679 14.2536 13.2435V7.28093C14.2536 6.21998 13.3923 5.37122 12.3158 5.37122H11.8421V2.67641C11.8421 1.61546 10.9808 0.766697 9.90428 0.766697H1.93779C0.861242 0.766697 0 1.61546 0 2.67641V18.4421C0 18.9089 0.387559 19.2909 0.861242 19.2909H10.9808C11.4545 19.2909 11.8421 18.9089 11.8421 18.4421V6.64436H12.3158C12.6818 6.64436 12.9617 6.92021 12.9617 7.28093V13.2435C13.0048 14.4105 13.9737 15.3017 15.1579 15.2805C16.2775 15.2381 17.1818 14.3469 17.2248 13.2435V3.80102L13.5215 0.618164ZM9.66744 8.89358H2.17464V3.10079H9.66744V8.89358Z" fill="#7CFF6B"></path></svg>
-                      </span> <span id="gas" class="gas-text"></span>
-                    </div>
-                  </div>
-                  </section>
-                <div class="card-body">
-                  <h5 class='card-text inline' style="color:white"><strong>Total Staked XEQ</strong></h5>
-                  <p id="total_staked_xeq" class="card-text text-right">
-
-                  </p>
-                  <h5 class='card-text' style="color:white"><strong>Total Staked USDC</strong></h5>
-                  <p id="total_staked_usdc" class="card-text">
-
-                  </p>
-                  <h5 class='card-text' style="color:white"><strong>Total Staked ETH</strong></h5>
-                  <p id="total_staked_eth" class="card-text">
-
-                  </p>
-                </div>
-                <div><h1>Ecosystem</h1></div>
-                <ul class="nav nav-pills mb-3" id="pills-tab2" role="tablist">
-                  <li class="nav-item" role="presentation">
-                    <button
-                      class="btn nav-link btn"
-                      id="swaps"
-                      type="button"
-                      disabled
-                    >
-                      Swaps
-                    </button>
-                  </li>
-                  <li class="nav-item" role="presentation">
-                      <button
-                        class="btn nav-link btn"
-                        id="price_feed"
-                        type="button"
-                        disabled
-                      >
-                        Price Feeds
-                      </button>
-                    </li>
-                </ul>
-
-              </div>
-          </div>
-
-          <div id="user_panel" class="col-lg-4 mx-auto" style="display:flex;">
-            <div class="card">
-
-              <div><h5 id="account">User</h5></div>
-              </section>
-            <div class="card-body">
-                <h5 class='card-text' style="margin-top: 1rem;"><strong>Your Balance</strong></h5>
-                <p id="user_balance" class="card-text">
-
-                </p>
-              <h5 class='card-text' style="margin-top: 1rem;"><strong>Staked (% of Pool)</strong></h5>
-              <p id="user_staked" class="card-text">
-
-              </p>
-              <h5 class='card-text' style="margin-top: 1rem;"><strong>Daily Rewards</strong></h5>
-              <p id="daily_returns" class="card-text">
-
-              </p>
-              <h5 class='card-text' style="margin-top: 1rem;"><strong>Pending Rewards</strong></h5>
-              <p id="pending_claim" class="card-text" style="display: inline;">
-
-              </p>
-              <span><button id="claim" type="button" class="btn-sm btn-success" style="display: inline;">Claim</button></span>
-
-              <h5 class='card-text' style="margin-top: 1rem;"><strong>Approved for Staking</strong></h5>
-              <p id="approved_for_staking" class="card-text">
-
-              </p>
-            </div>
-
-            <div id="deposit_user_panel" class="card-body">
-              <div><h5 id="account">Deposit/Withdraw</h5></div>
-
-              <label id="deposit_amount_name" style="margin-top: 1rem" for="deposit_withdraw_amount" class="form-label">wXEQ Amount</label>
-              <input type="text" class="form-control" id="deposit_withdraw_amount">
-
-              <div id="user_panel_buttons">
-                  <button id="new_deposit_button"  type="button" style="margin-top: 1rem" class="btn btn-info ">Deposit</button>
-                    <button  id="new_withdrawal_button" type="button" style="margin-top: 1rem" class="btn btn-danger" >Withdraw</button>
-
-                  <button  id="new_approve_button" type="button" style="margin-top: 1rem" class="btn btn-info" >Approve</button>
-
-                  <button id="final_new_deposit_button"  type="button" style="margin-top: 1rem" class="btn btn-success ">Deposit</button>
-                  <button id="deposit_withdraw_back"  type="button" style="margin-top: 1rem" class="btn btn-warning ">Back</button>
-
-              </div>
-            </div>
-
-
-
-
-
-          </div>
-      </div>
-
-      <div id="swap_panel" class="col-lg-4 mx-auto" style="display:flex;">
-        <div class="card">
-          <div><h3>Equilibria Bridge</h3></div>
-          <div><p style="color:red">2.9% Bridge Fee</p></div>
-            <div class="card-body">
-              <div><h5 id="claim_wxeq_string">Claim XEQ->wXEQ</h5></div>
-              <div><p style="color:yellow">Delayed</p></div>
-              <label for="xeq_swap_transaction_hash" class="form-label">XEQ Transaction Hash</label>
-              <input type="text" class="form-control" id="xeq_swap_transaction_hash">
-              <div class="form-text">This is found in your XEQ wallet!</div>
-              <button type="button" style="margin-top: 1rem"  id="check_status" class="btn btn-primary">Check Status</button>
-              <button type="button" style="margin-top: 1rem"  id="claim_wxeq_swap" class="btn btn-primary">Claim wXEQ</button>
-              <p id="warning_text" style="color:red;margin-top: 1rem">Swap not registered yet! Try again later.</p>
-            </div>
-
-            <div id="register_swap_card" class="card-body">
-              <div><h5 id="register_wxeq_string">Register wXEQ->XEQ</h5></div>
-
-            <div id="start_swap">
-              <label for="wxeq_swap_address" class="form-label">XEQ Address</label>
-              <input type="text" class="form-control" id="wxeq_swap_address">
-
-              <label style="margin-top: 1rem" for="wxeq_swap_amount" class="form-label">wXEQ Amount</label>
-              <input type="text" class="form-control" id="wxeq_swap_amount">
-
-              <button type="button" style="margin-top: 1rem" id="register_swap" class="btn btn-primary">Start Swap</button>
-            </div>
-
-
-              <div id="swap_approve">
-                <label style="margin-top: 1rem" for="wxeq_swap_amount" class="form-label">wXEQ Amount</label>
-                <input type="text" class="form-control" id="swap_approve_amount">
-                <button type="button" style="margin-top: 1rem" id="approve_swap" class="btn btn-primary">Approve</button>
-              </div>
-
-              <div id="finish_swap">
-                <label for="wxeq_swap_address" class="form-label">XEQ Address</label>
-                <input type="text" class="form-control" id="finished_wxeq_swap_address" disabled>
-
-                <label style="margin-top: 1rem" for="wxeq_swap_amount" class="form-label">wXEQ Amount</label>
-                <input type="text" class="form-control" id="finished_wxeq_swap_amount" disabled>
-                <button type="button" style="margin-top: 1rem" id="finish_swap" class="btn btn-primary">Register Swap</button>
-              </div>
-            </div>
-
-            <div id="check_swap_card" class="card-body">
-              <div><h5>Check wXEQ->XEQ Swap</h5></div>
-              <div id="check_swap_status"><p id="check_swap_status_message" style="color:yellow">Status: </p></div>
-              <label for="eth_swap_tx_hash" class="form-label">ETH Transaction Hash</label>
-              <input type="text" class="form-control" id="eth_swap_tx_hash">
-
-              <button type="button" style="margin-top: 1rem" id="check_swap" class="btn btn-primary">Check Swap</button>
-              <button type="button" style="margin-top: 1rem" id="close_check_swap" class="btn btn-danger">Close</button>
-
-            </div>
-
-            <button type="button" style="margin-top: 1rem" id="open_check_swap" class="btn btn-primary">Check Swap</button>
-
-          </div>
-      </div>
-
+<header>
+
+  <!-- Font Awesome -->
+  <link
+          href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+          rel="stylesheet"
+  />
+  <!-- Google Fonts -->
+  <link
+          href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
+          rel="stylesheet"
+  />
+  <!-- MDB -->
+  <link
+          href="https://cdnjs.cloudflare.com/ajax/libs/mdb-ui-kit/3.10.1/mdb.dark.min.css"
+          rel="stylesheet"
+  />
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
+</header>
+
+<style>
+    body {
+        background-color: rgb(13, 15, 25);
+    }
+
+    nav {
+        background-color: #c5e0ff00;
+    }
+
+    .md-form.md-outline label {
+        z-index: 3;
+    }
+
+    .header-text {
+        color: #c5e0ff !important;
+    }
+
+    .network-text {
+        color: rgb(173, 173, 173) !important;
+    }
+
+    p {
+        color: white;
+    }
+
+    h3 {
+        color: white;
+    }
+
+    h5 {
+        color: white
+    }
+
+    .bkgdred {
+        background-color: #E41F20;
+    }
+
+    .bkgdblue {
+        background-color: #0b5ed7;
+    }
+
+    h1 {
+        color: white
+    }
+
+    .gas-text {
+        color: rgb(46, 243, 168) !important;
+    }
+
+    .input-group.md-form.form-sm.form-3 input {
+        border: 1px solid #bdbdbd;
+        border-top-right-radius: 0.25rem;
+        border-bottom-right-radius: 0.25rem;
+    }
+
+    .input-group.md-form.form-sm.form-3 input[type=text]:focus:not([readonly]).amber-border {
+        border: 1px solid #ffca28;
+        box-shadow: none;
+    }
+
+    .card {
+        margin-top: 2rem;
+        float: left;
+        width: 100%;
+        padding: 5rem;
+        margin-bottom: 2rem;
+        border: 0;
+        margin: 0 auto; /* Added */
+        float: none; /* Added */
+        margin-bottom: 10px; /* Added */
+        margin-top: 10rem;
+        background-color: rgb(22, 21, 34);
+    }
+
+    .card-body {
+        background-color: rgb(32, 34, 49);
+        margin-top: 2rem;
+        margin-bottom: 2rem;
+    }
+</style>
+
+<body>
+
+<div class="container-fluid h-100">
+
+  <nav class="navbar navbar-expand-lg">
+    <div class="container-fluid">
+      <img
+              src="xeq_logo_with_padding.png"
+              height="80"
+              alt="wXEQ Portal"
+      />
+
+      <div class="">
+        <div id="prepare">
+          <button class="btn btn-primary navbar-brand" id="btn-connect">
+            Connect wallet
+          </button>
         </div>
+        <div id="connected" style="display: none;">
 
-        <div
-        class="modal" id="modal_withdraw" tabindex="-1"
-      >
-        <div
-         class="modal-dialog" style="background-color: rgb(22,21,34);">
-          <div class="modal-content" style="background-color: rgb(22,21,34);padding:2rem; margin: 2rem;">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Withdraw into LP Farm</h5>
-            </div>
-            <div class="modal-body">
+          <button class="btn btn-primary px-3 me-2" id="btn-disconnect">
+            Disconnect wallet
+          </button>
 
-              <label style="margin-top: 1rem" for="amount_withdraw" class="form-label">Amount</label>
-              <input type="text" class="form-control" id="amount_withdraw">
-
-                  <div class="row" style="margin-top: 1rem;">
-                    <button id="withdraw" type="button" class="btn btn-danger btn-rounded" >Withdraw</button>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" id="modal_withdraw_close">
-                Close
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-
-        <div
-        class="modal" id="modal_deposit" tabindex="-1"
-      >
-        <div
-         class="modal-dialog" style="background-color: rgb(22,21,34);">
-          <div class="modal-content" style="background-color: rgb(22,21,34);padding:2rem; margin: 2rem;">
-            <div class="modal-header">
-              <h5 class="modal-title" id="exampleModalLabel">Deposit into LP Farm</h5>
-            </div>
-            <div class="modal-body">
-
-              <label style="margin-top: 1rem" for="amount_deposit" class="form-label">Amount</label>
-              <input type="text" class="form-control" id="amount_deposit">
-
-                  <div class="row" style="margin-top: 1rem;">
-                    <button id="approve" type="button" class="btn btn-danger btn-rounded" >Approve</button>
-                </div>
-
-                  <div class="row" style="margin-top: 1rem;">
-                    <button id="deposit" type="button" class="btn btn-danger btn-rounded" >Deposit</button>
-                </div>
-
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-secondary" id="modal_deposit_close">
-                Close
-              </button>
-            </div>
-          </div>
         </div>
       </div>
 
 
+    </div>
+  </nav>
 
-        <script type="text/javascript" src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
-        <script type="text/javascript" src="https://unpkg.com/web3modal@1.9.0/dist/index.js"></script>
-        <script type="text/javascript" src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"></script>
-        <script type="text/javascript" src="https://unpkg.com/@walletconnect/web3-provider@1.7.1/dist/umd/index.min.js"></script>
-        <script type="text/javascript" src="https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js"></script>
-        <script type="text/javascript" src='https://unpkg.com/@uniswap/v2-core@1.0.0/build/IUniswapV2Pair.json'></script>
-        <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-        <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 
-        <script type="text/javascript" src="index.js"></script>
-
-    </body>
-
-    <footer class="fixed-bottom" style="background-color: #21081a00;">
-        <section
-        class="d-flex justify-content-center justify-content-lg-between p-4"
-      >
-        <!-- Left -->
-        <div id="eth_block_num" class="network-text me-5 d-none d-lg-block">
-        </div>
-        <!-- Left -->
-
-        <!-- Right -->
+  <div class="row align-items-center">
+    <div class="col-lg-4 mx-auto" style="display:flex;">
+      <div class="card">
+        <div><h1 id="top-header">Wrapped Equilibria Dashboard</h1></div>
         <div>
-          <div id="network">
-              <a id="network-name" class="network-text"></a>
+          <ul class="nav nav-pills mb-3" id="pills-tab2" role="tablist">
+            <li class="nav-item" role="presentation">
+              <button
+                      class="nav-link btn active"
+                      id="wXEQStaking"
+                      type="button"
+              >
+                wXEQ
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                      class="btn nav-link"
+                      id="wXEQETHStaking"
+                      type="button"
+              >
+                wXEQ-ETH
+              </button>
+            </li>
+            <li class="nav-item" role="presentation">
+              <button
+                      class="btn nav-link btn"
+                      id="wXEQUSDCStaking"
+                      type="button"
+              >
+                wXEQ-USDC
+              </button>
+            </li>
+          </ul>
+          <!-- Pills navs -->
+        </div>
+        <div>
+
+
+        </div>
+
+        <section style="padding: 0"
+                 class="d-flex justify-content-center justify-content-lg-between p-4"
+        >
+          <div><h3 id="staking_type">wXEQ</h3></div>
+          <div>
+            <div style="" id="network">
+                      <span id="gas_symbol">                        <svg width="18" height="20" viewBox="0 0 18 20"
+                                                                         fill="none" xmlns="http://www.w3.org/2000/svg"><path
+                              d="M13.5215 0.618164L12.6818 1.57302L15.933 4.37393V13.2435C15.9114 13.6891 15.5239 14.0498 15.0502 14.0286C14.6196 14.0074 14.2751 13.6679 14.2536 13.2435V7.28093C14.2536 6.21998 13.3923 5.37122 12.3158 5.37122H11.8421V2.67641C11.8421 1.61546 10.9808 0.766697 9.90428 0.766697H1.93779C0.861242 0.766697 0 1.61546 0 2.67641V18.4421C0 18.9089 0.387559 19.2909 0.861242 19.2909H10.9808C11.4545 19.2909 11.8421 18.9089 11.8421 18.4421V6.64436H12.3158C12.6818 6.64436 12.9617 6.92021 12.9617 7.28093V13.2435C13.0048 14.4105 13.9737 15.3017 15.1579 15.2805C16.2775 15.2381 17.1818 14.3469 17.2248 13.2435V3.80102L13.5215 0.618164ZM9.66744 8.89358H2.17464V3.10079H9.66744V8.89358Z"
+                              fill="#7CFF6B"></path></svg>
+                      </span> <span id="gas" class="gas-text"></span>
+            </div>
+          </div>
+        </section>
+        <div class="card-body">
+          <h5 class='card-text inline' style="color:white"><strong>Total Staked XEQ</strong></h5>
+          <p id="total_staked_xeq" class="card-text text-right">
+
+          </p>
+          <h5 class='card-text' style="color:white"><strong>Total Staked USDC</strong></h5>
+          <p id="total_staked_usdc" class="card-text">
+
+          </p>
+          <h5 class='card-text' style="color:white"><strong>Total Staked ETH</strong></h5>
+          <p id="total_staked_eth" class="card-text">
+
+          </p>
+        </div>
+        <div><h1>Ecosystem</h1></div>
+        <ul class="nav nav-pills mb-3" id="pills-tab2" role="tablist">
+          <li class="nav-item" role="presentation">
+            <button
+                    class="btn nav-link btn"
+                    id="swaps"
+                    type="button"
+                    disabled
+            >
+              Swaps
+            </button>
+          </li>
+          <li class="nav-item" role="presentation">
+            <button
+                    class="btn nav-link btn"
+                    id="price_feed"
+                    type="button"
+                    disabled
+            >
+              Price Feeds
+            </button>
+          </li>
+        </ul>
+
+      </div>
+    </div>
+
+    <div id="user_panel" class="col-lg-4 mx-auto" style="display:flex;">
+      <div class="card">
+
+        <div><h5 id="account">User</h5></div>
+        </section>
+        <div class="card-body">
+          <h5 class='card-text' style="margin-top: 1rem;"><strong>Your Balance</strong></h5>
+          <p id="user_balance" class="card-text">
+
+          </p>
+          <h5 class='card-text' style="margin-top: 1rem;"><strong>Staked (% of Pool)</strong></h5>
+          <p id="user_staked" class="card-text">
+
+          </p>
+          <h5 class='card-text' style="margin-top: 1rem;"><strong>Daily Rewards</strong></h5>
+          <p id="daily_returns" class="card-text">
+
+          </p>
+          <h5 class='card-text' style="margin-top: 1rem;"><strong>Pending Rewards</strong></h5>
+          <p id="pending_claim" class="card-text" style="display: inline;">
+
+          </p>
+          <span><button id="claim" type="button" class="btn-sm btn-success"
+                        style="display: inline;">Claim</button></span>
+
+          <h5 class='card-text' style="margin-top: 1rem;"><strong>Approved for Staking</strong></h5>
+          <p id="approved_for_staking" class="card-text">
+
+          </p>
+        </div>
+
+        <div id="deposit_user_panel" class="card-body">
+          <div><h5 id="account">Deposit/Withdraw</h5></div>
+
+          <label id="deposit_amount_name" style="margin-top: 1rem" for="deposit_withdraw_amount" class="form-label">wXEQ
+            Amount</label>
+          <input type="text" class="form-control" id="deposit_withdraw_amount">
+
+          <div id="user_panel_buttons">
+            <button id="new_deposit_button" type="button" style="margin-top: 1rem" class="btn btn-info ">Deposit
+            </button>
+            <button id="new_withdrawal_button" type="button" style="margin-top: 1rem" class="btn btn-danger">Withdraw
+            </button>
+
+            <button id="new_approve_button" type="button" style="margin-top: 1rem" class="btn btn-info">Approve</button>
+
+            <button id="final_new_deposit_button" type="button" style="margin-top: 1rem" class="btn btn-success ">
+              Deposit
+            </button>
+            <button id="deposit_withdraw_back" type="button" style="margin-top: 1rem" class="btn btn-warning ">Back
+            </button>
+
           </div>
         </div>
-        <!-- Right -->
-      </section>
-    </footer>
+
+
+      </div>
+    </div>
+
+    <div id="swap_panel" class="col-lg-4 mx-auto" style="display:flex;">
+      <div class="card">
+        <div><h3>Equilibria Bridge</h3></div>
+        <div><p style="color:red">2.9% Bridge Fee</p></div>
+        <div class="card-body">
+          <div><h5 id="claim_wxeq_string">Claim XEQ->wXEQ</h5></div>
+          <div><p style="color:yellow">Delayed</p></div>
+          <label for="xeq_swap_transaction_hash" class="form-label">XEQ Transaction Hash</label>
+          <input type="text" class="form-control" id="xeq_swap_transaction_hash">
+          <div class="form-text">This is found in your XEQ wallet!</div>
+          <button type="button" style="margin-top: 1rem" id="check_status" class="btn btn-primary">Check Status</button>
+          <button type="button" style="margin-top: 1rem" id="claim_wxeq_swap" class="btn btn-primary">Claim wXEQ
+          </button>
+          <p id="warning_text" style="color:red;margin-top: 1rem">Swap not registered yet! Try again later.</p>
+        </div>
+
+        <div id="register_swap_card" class="card-body">
+          <div><h5 id="register_wxeq_string">Register wXEQ->XEQ</h5></div>
+
+          <div id="start_swap">
+            <label for="wxeq_swap_address" class="form-label">XEQ Address</label>
+            <input type="text" class="form-control" id="wxeq_swap_address">
+
+            <label style="margin-top: 1rem" for="wxeq_swap_amount" class="form-label">wXEQ Amount</label>
+            <input type="text" class="form-control" id="wxeq_swap_amount">
+
+            <button type="button" style="margin-top: 1rem" id="register_swap" class="btn btn-primary">Start Swap
+            </button>
+          </div>
+
+
+          <div id="swap_approve">
+            <label style="margin-top: 1rem" for="wxeq_swap_amount" class="form-label">wXEQ Amount</label>
+            <input type="text" class="form-control" id="swap_approve_amount">
+            <button type="button" style="margin-top: 1rem" id="approve_swap" class="btn btn-primary">Approve</button>
+          </div>
+
+          <div id="finish_swap">
+            <label for="wxeq_swap_address" class="form-label">XEQ Address</label>
+            <input type="text" class="form-control" id="finished_wxeq_swap_address" disabled>
+
+            <label style="margin-top: 1rem" for="wxeq_swap_amount" class="form-label">wXEQ Amount</label>
+            <input type="text" class="form-control" id="finished_wxeq_swap_amount" disabled>
+            <button type="button" style="margin-top: 1rem" id="finish_swap" class="btn btn-primary">Register Swap
+            </button>
+          </div>
+        </div>
+
+        <div id="check_swap_card" class="card-body">
+          <div><h5>Check wXEQ->XEQ Swap</h5></div>
+          <div id="check_swap_status"><p id="check_swap_status_message" style="color:yellow">Status: </p></div>
+          <label for="eth_swap_tx_hash" class="form-label">ETH Transaction Hash</label>
+          <input type="text" class="form-control" id="eth_swap_tx_hash">
+
+          <button type="button" style="margin-top: 1rem" id="check_swap" class="btn btn-primary">Check Swap</button>
+          <button type="button" style="margin-top: 1rem" id="close_check_swap" class="btn btn-danger">Close</button>
+
+        </div>
+
+        <button type="button" style="margin-top: 1rem" id="open_check_swap" class="btn btn-primary">Check Swap</button>
+
+      </div>
+    </div>
+
+  </div>
+
+  <div
+          class="modal" id="modal_withdraw" tabindex="-1"
+  >
+    <div
+            class="modal-dialog" style="background-color: rgb(22,21,34);">
+      <div class="modal-content" style="background-color: rgb(22,21,34);padding:2rem; margin: 2rem;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Withdraw into LP Farm</h5>
+        </div>
+        <div class="modal-body">
+
+          <label style="margin-top: 1rem" for="amount_withdraw" class="form-label">Amount</label>
+          <input type="text" class="form-control" id="amount_withdraw">
+
+          <div class="row" style="margin-top: 1rem;">
+            <button id="withdraw" type="button" class="btn btn-danger btn-rounded">Withdraw</button>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="modal_withdraw_close">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div
+          class="modal" id="modal_deposit" tabindex="-1"
+  >
+    <div
+            class="modal-dialog" style="background-color: rgb(22,21,34);">
+      <div class="modal-content" style="background-color: rgb(22,21,34);padding:2rem; margin: 2rem;">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">Deposit into LP Farm</h5>
+        </div>
+        <div class="modal-body">
+
+          <label style="margin-top: 1rem" for="amount_deposit" class="form-label">Amount</label>
+          <input type="text" class="form-control" id="amount_deposit">
+
+          <div class="row" style="margin-top: 1rem;">
+            <button id="approve" type="button" class="btn btn-danger btn-rounded">Approve</button>
+          </div>
+
+          <div class="row" style="margin-top: 1rem;">
+            <button id="deposit" type="button" class="btn btn-danger btn-rounded">Deposit</button>
+          </div>
+
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" id="modal_deposit_close">
+            Close
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script type="text/javascript" src="https://unpkg.com/web3@1.2.11/dist/web3.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/web3modal@1.9.0/dist/index.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/evm-chains@0.2.0/dist/umd/index.min.js"></script>
+  <script type="text/javascript"
+          src="https://unpkg.com/@walletconnect/web3-provider@1.7.1/dist/umd/index.min.js"></script>
+  <script type="text/javascript" src="https://unpkg.com/fortmatic@2.0.6/dist/fortmatic.js"></script>
+  <script type="text/javascript" src='https://unpkg.com/@uniswap/v2-core@1.0.0/build/IUniswapV2Pair.json'></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
+  <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+          integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+          crossorigin="anonymous"></script>
+
+  <script type="text/javascript" src="index.js"></script>
+
+</body>
+
+<footer class="fixed-bottom" style="background-color: #21081a00;">
+  <section
+          class="d-flex justify-content-center justify-content-lg-between p-4"
+  >
+    <!-- Left -->
+    <div id="eth_block_num" class="network-text me-5 d-none d-lg-block">
+    </div>
+    <!-- Left -->
+
+    <!-- Right -->
+    <div>
+      <div id="network">
+        <a id="network-name" class="network-text"></a>
+      </div>
+    </div>
+    <!-- Right -->
+  </section>
+</footer>
 
 </html>
