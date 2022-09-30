@@ -363,9 +363,6 @@ async function onConnect() {
     document.getElementById("wXEQUSDCStaking").innerText = "wXEQ-USDC"
     document.getElementById("deposit_amount_name").innerText = "wXEQ Amount"
     // document.getElementById("btn-primary").style.backgroundColor = "#0b5ed7"
-    $("#register_wxeq_string").html("Register wXEQ->XEQ")
-    $("#wxeq_swap_amount").html("wXEQ Amount")
-    $("#claim_wxeq_string").html("Claim XEQ->wXEQ")
     document.getElementById("staking_type").style.display = "block"
 
 
@@ -385,9 +382,6 @@ async function onConnect() {
     document.getElementById("wXEQStaking").innerText = "aXEQ"
     document.getElementById("deposit_amount_name").innerText = "aXEQ Amount"
     $("#wXEQUSDCStaking").html("AXEQ-USDC")
-    $("#register_wxeq_string").html("Register aXEQ->XEQ")
-    $("#wxeq_swap_amount").html("aXEQ Amount")
-    $("#claim_wxeq_string").html("Claim XEQ->aXEQ")
     document.getElementById("staking_type").style.display = "block"
   }
   document.getElementById("staking_type").innerText = symbol
