@@ -394,7 +394,6 @@ async function onConnect() {
 
 
   let total_wxeq_deposited = await stakingContract.methods.getPoolTotalDeposited(0).call();
-  document.getElementById("swap_panel").style.display = "none"
 
   $("check_swap_card").hide();
 
@@ -452,8 +451,6 @@ async function onDisconnect() {
   console.log("Killing the wallet connection", provider);
   $("#prepare").show();
   $("#connected").hide()
-  $("#user_panel").hide()
-  $("#swap_panel").hide()
 
   clearInterval(interval_balance)
   clearInterval(interval_daily)
@@ -481,7 +478,6 @@ async function onDisconnect() {
 async function onWXEQ() {
   if (selectedAccount != null) {
     $("#user_panel").show()
-    $("#swap_panel").hide()
   }
   document.querySelector("#wXEQStaking").classList.add('active')
   document.querySelector("#wXEQETHStaking").classList.remove('active')
@@ -511,7 +507,6 @@ async function onWXEQ() {
 async function onWXEQUSDC() {
   if (selectedAccount != null) {
     $("#user_panel").show()
-    $("#swap_panel").hide()
   }
   document.querySelector("#wXEQStaking").classList.remove('active')
   document.querySelector("#wXEQETHStaking").classList.remove('active')
@@ -552,7 +547,6 @@ async function onWXEQUSDC() {
 async function onWXEQETH() {
   if (selectedAccount != null) {
     $("#user_panel").show()
-    $("#swap_panel").hide()
   }
   document.querySelector("#wXEQStaking").classList.remove('active')
   document.querySelector("#wXEQUSDCStaking").classList.remove('active')
@@ -762,7 +756,6 @@ $("#swaps").click(function () {
 
   if (selectedAccount != null) {
     $("#user_panel").hide()
-    $("#swap_panel").show()
   }
   $("#warning_text").hide()
   document.querySelector("#wXEQStaking").classList.remove('active')
@@ -1068,5 +1061,4 @@ window.addEventListener('load', async () => {
 
 $(document).ready(function () {
   $("#user_panel").hide()
-  $("#swap_panel").hide()
 })

@@ -209,30 +209,6 @@
 
           </p>
         </div>
-        <div><h1>Ecosystem</h1></div>
-        <ul class="nav nav-pills mb-3" id="pills-tab2" role="tablist">
-          <li class="nav-item" role="presentation">
-            <button
-                    class="btn nav-link btn"
-                    id="swaps"
-                    type="button"
-                    disabled
-            >
-              Swaps
-            </button>
-          </li>
-          <li class="nav-item" role="presentation">
-            <button
-                    class="btn nav-link btn"
-                    id="price_feed"
-                    type="button"
-                    disabled
-            >
-              Price Feeds
-            </button>
-          </li>
-        </ul>
-
       </div>
     </div>
 
@@ -294,72 +270,6 @@
 
       </div>
     </div>
-
-    <div id="swap_panel" class="col-lg-4 mx-auto" style="display:flex;">
-      <div class="card">
-        <div><h3>Equilibria Bridge</h3></div>
-        <div><p style="color:red">2.9% Bridge Fee</p></div>
-        <div class="card-body">
-          <div><h5 id="claim_wxeq_string">Claim XEQ->wXEQ</h5></div>
-          <div><p style="color:yellow">Delayed</p></div>
-          <label for="xeq_swap_transaction_hash" class="form-label">XEQ Transaction Hash</label>
-          <input type="text" class="form-control" id="xeq_swap_transaction_hash">
-          <div class="form-text">This is found in your XEQ wallet!</div>
-          <button type="button" style="margin-top: 1rem" id="check_status" class="btn btn-primary">Check Status</button>
-          <button type="button" style="margin-top: 1rem" id="claim_wxeq_swap" class="btn btn-primary">Claim wXEQ
-          </button>
-          <p id="warning_text" style="color:red;margin-top: 1rem">Swap not registered yet! Try again later.</p>
-        </div>
-
-        <div id="register_swap_card" class="card-body">
-          <div><h5 id="register_wxeq_string">Register wXEQ->XEQ</h5></div>
-
-          <div id="start_swap">
-            <label for="wxeq_swap_address" class="form-label">XEQ Address</label>
-            <input type="text" class="form-control" id="wxeq_swap_address">
-
-            <label style="margin-top: 1rem" for="wxeq_swap_amount" class="form-label">wXEQ Amount</label>
-            <input type="text" class="form-control" id="wxeq_swap_amount">
-
-            <button type="button" style="margin-top: 1rem" id="register_swap" class="btn btn-primary">Start Swap
-            </button>
-          </div>
-
-
-          <div id="swap_approve">
-            <label style="margin-top: 1rem" for="wxeq_swap_amount" class="form-label">wXEQ Amount</label>
-            <input type="text" class="form-control" id="swap_approve_amount">
-            <button type="button" style="margin-top: 1rem" id="approve_swap" class="btn btn-primary">Approve</button>
-          </div>
-
-          <div id="finish_swap">
-            <label for="wxeq_swap_address" class="form-label">XEQ Address</label>
-            <input type="text" class="form-control" id="finished_wxeq_swap_address" disabled>
-
-            <label style="margin-top: 1rem" for="wxeq_swap_amount" class="form-label">wXEQ Amount</label>
-            <input type="text" class="form-control" id="finished_wxeq_swap_amount" disabled>
-            <button type="button" style="margin-top: 1rem" id="finish_swap" class="btn btn-primary">Register Swap
-            </button>
-          </div>
-        </div>
-
-        <div id="check_swap_card" class="card-body">
-          <div><h5>Check wXEQ->XEQ Swap</h5></div>
-          <div id="check_swap_status"><p id="check_swap_status_message" style="color:yellow">Status: </p></div>
-          <label for="eth_swap_tx_hash" class="form-label">ETH Transaction Hash</label>
-          <input type="text" class="form-control" id="eth_swap_tx_hash">
-
-          <button type="button" style="margin-top: 1rem" id="check_swap" class="btn btn-primary">Check Swap</button>
-          <button type="button" style="margin-top: 1rem" id="close_check_swap" class="btn btn-danger">Close</button>
-
-        </div>
-
-        <button type="button" style="margin-top: 1rem" id="open_check_swap" class="btn btn-primary">Check Swap</button>
-
-      </div>
-    </div>
-
-  </div>
 
   <div
           class="modal" id="modal_withdraw" tabindex="-1"
