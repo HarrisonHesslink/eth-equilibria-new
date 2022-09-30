@@ -429,7 +429,6 @@ async function onConnect() {
   document.querySelector("#withdraw").addEventListener("click", onWithdraw);
 
 
-  $("#swaps").removeAttr("disabled");
   $("#new_approve_button").hide()
   $("#final_new_deposit_button").hide()
   $("#deposit_withdraw_back").hide()
@@ -455,7 +454,6 @@ async function onDisconnect() {
   clearInterval(interval_balance)
   clearInterval(interval_daily)
   clearInterval(interval_pending)
-  $("#swaps").prop('disabled', true);
 
   // TODO: Which providers have close method?
   if (provider.close) {
@@ -482,7 +480,6 @@ async function onWXEQ() {
   document.querySelector("#wXEQStaking").classList.add('active')
   document.querySelector("#wXEQETHStaking").classList.remove('active')
   document.querySelector("#wXEQUSDCStaking").classList.remove('active')
-  document.querySelector("#swaps").classList.remove('active')
   document.querySelector("#staking_type").innerHTML = symbol;
 
   let total_wxeq_deposited = await stakingContract.methods.getPoolTotalDeposited(0).call();
@@ -511,7 +508,6 @@ async function onWXEQUSDC() {
   document.querySelector("#wXEQStaking").classList.remove('active')
   document.querySelector("#wXEQETHStaking").classList.remove('active')
   document.querySelector("#wXEQUSDCStaking").classList.add('active')
-  document.querySelector("#swaps").classList.remove('active')
   document.querySelector("#staking_type").innerHTML = "" + symbol + "-USDC";
 
   let uniswap_wxeq_usdc = await uniswapContract2.methods.getReserves().call()
@@ -551,7 +547,6 @@ async function onWXEQETH() {
   document.querySelector("#wXEQStaking").classList.remove('active')
   document.querySelector("#wXEQUSDCStaking").classList.remove('active')
   document.querySelector("#wXEQETHStaking").classList.add('active')
-  document.querySelector("#swaps").classList.remove('active')
   let total_wxeq_eth_deposited = await stakingContract.methods.getPoolTotalDeposited(1).call();
 
   let uniswap_wxeq_reserve = await uniswapContract.methods.getReserves().call()
@@ -746,126 +741,7 @@ $("#modal_withdraw_close").click(function () {
 });
 
 
-$("#swaps").click(function () {
-  console.log(selectedAccount)
-  $("#claim_wxeq_swap").hide()
-  $("#check_swap_card").hide();
-  $("#finish_swap").hide();
-  $("#swap_approve").hide();
-  $("#check_swap_status").hide()
 
-  if (selectedAccount != null) {
-    $("#user_panel").hide()
-  }
-  $("#warning_text").hide()
-  document.querySelector("#wXEQStaking").classList.remove('active')
-  document.querySelector("#wXEQUSDCStaking").classList.remove('active')
-  document.querySelector("#wXEQETHStaking").classList.remove('active')
-  document.querySelector("#swaps").classList.add('active')
-
-});
-
-$("#check_status").click(async function () {
-
-  $("#warning_text").hide()
-
-  let bridge_contract = new web3.eth.Contract(bridgeABI, bridgeAddress)
-
-
-  let tx_hash = $("#xeq_swap_transaction_hash").val()
-
-  console.log(tx_hash)
-
-  let registerd = await bridge_contract.methods.isSwapRegistered(tx_hash).call()
-  console.log(bridge_contract.methods)
-  let claimed = await bridge_contract.methods.xeq_complete(tx_hash).call()
-  console.log(claimed)
-
-  if (registerd && !claimed) {
-    $("#check_status").hide()
-    $("#claim_wxeq_swap").show()
-  } else {
-    if (!claimed) {
-      $("#warning_text").text("Swap not registered yet! Try again later.")
-      $("#warning_text").css("color", "red")
-      $("#warning_text").show()
-    } else {
-      $("#warning_text").text("Swap already claimed!")
-      $("#warning_text").css("color", "green")
-      $("#warning_text").show()
-    }
-  }
-})
-
-$("#claim_wxeq_swap").click(async function () {
-
-  let bridge_contract = new web3.eth.Contract(bridgeABI, bridgeAddress)
-
-  let tx_hash = $("#xeq_swap_transaction_hash").val()
-
-  let tx = await bridge_contract.methods.claim_from_xeq(tx_hash).send({from: selectedAccount})
-
-  console.log(tx)
-})
-
-$("#register_swap").click(async function () {
-
-  let xeq_address = $("#wxeq_swap_address").val()
-  let wxeq_amount = $("#wxeq_swap_amount").val()
-  $("#finished_wxeq_swap_amount").val(wxeq_amount)
-  $("#finished_wxeq_swap_address").val(xeq_address)
-
-  $("#swap_approve_amount").val(wxeq_amount)
-  $("#start_swap").hide()
-  $("#swap_approve").show()
-})
-
-$("#approve_swap").click(async function () {
-  erc20Contract = new web3.eth.Contract(ERC20ABI, tokenAddress)
-
-  let approved_coins = await erc20Contract.methods.allowance(selectedAccount, bridgeAddress).call()
-
-
-  let amountString = $("#swap_approve_amount").val()
-  let amount = web3.utils.toWei(amountString, 'ether')
-
-  if (approved_coins >= amount) {
-    $("#swap_approve").hide()
-    $("#finish_swap").show()
-  }
-
-  let approve_tx = await erc20Contract.methods.approve(bridgeAddress, amount).send({from: selectedAccount})
-  console.log(approve_tx)
-  if (approve_tx) {
-    $("#swap_approve").hide()
-    $("#finish_swap").show()
-  }
-
-})
-
-$("#finish_swap").click(async function () {
-  let bridge_contract = new web3.eth.Contract(bridgeABI, bridgeAddress)
-  let wxeq_address = $("#finished_wxeq_swap_address").val()
-  let wxeq_amount = $("#finished_wxeq_swap_amount").val()
-
-  let amount = web3.utils.toWei(wxeq_amount, 'ether')
-
-  let tx = await bridge_contract.methods.request_to_xeq(amount, wxeq_address).send({from: selectedAccount})
-
-  console.log(tx)
-})
-
-$("#open_check_swap").click(async function () {
-  $("#open_check_swap").hide();
-  $("#check_swap_card").show();
-  $("#register_swap_card").hide()
-})
-
-$("#close_check_swap").click(async function () {
-  $("#open_check_swap").show();
-  $("#check_swap_card").hide();
-  $("#register_swap_card").show()
-})
 
 $("#deposit_withdraw_back").click(async function () {
   $("#new_withdrawal_button").show();
@@ -876,11 +752,7 @@ $("#deposit_withdraw_back").click(async function () {
   $("#deposit_withdraw_amount").attr("disabled", false)
 
 })
-$("#check_swap").click(async function () {
-  $("#check_swap_status_message").html("Status: Waiting")
-  $("#check_swap_status_message").attr("style", "color:yellow")
-  $("#check_swap_status").show()
-})
+
 
 
 $("#new_deposit_button").click(async function () {
